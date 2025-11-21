@@ -1,0 +1,12 @@
+/build/
+Lux.log
+.DS_Store
+.idea/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
