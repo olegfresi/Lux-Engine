@@ -1,0 +1,12 @@
+- Implement reflection
+- Memory management
+
+- Implement the simplest GUI system
+
+- Change mesh representation using vertex struct and naming attributes
+- Implement material system based on json
+- Implement shader automatic binding to properties such meshes and materials
+- Implement shader validation
+
+- Implement instancing
+- Implement batched rendering
