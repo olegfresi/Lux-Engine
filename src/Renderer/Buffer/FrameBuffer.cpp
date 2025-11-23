@@ -1,7 +1,4 @@
-#include "GL/glew.h"
-#include "GLFW/glfw3.h"
 #include "../../../include/Renderer/Buffer/FrameBuffer.hpp"
-#include "../../../include/OpenGL/OpenGLBuffer.hpp"
 #include "../../../include/OpenGL/OpenGLFrameBuffer.hpp"
 #include "../../../include/Application/EngineSettings.hpp"
 #include "../../../include/Renderer/Common/RenderCommand.hpp"
@@ -146,7 +143,8 @@ namespace lux
         }
 
         m_frameBuffer->UnbindFrameBuffer();
-        m_frameBuffer->CheckFrameBufferStatus();
+        if (!CheckFrameBufferStatus())
+            CORE_ERROR("Frame buffer is not complete");
     }
 
     void FrameBuffer::Resize(uint32_t width, uint32_t height)
@@ -156,12 +154,12 @@ namespace lux
         Invalidate();
     }
 
-    void FrameBuffer::CheckFrameBufferStatus() const
+    bool FrameBuffer::CheckFrameBufferStatus() const
     {
-        m_frameBuffer->CheckFrameBufferStatus();
+        return m_frameBuffer->CheckFrameBufferStatus();
     }
 
-    void FrameBuffer::AttachColorTexture(uint32_t* id, int samples, GPUTextureFormat format, uint32_t width, uint32_t height, int index)
+    void FrameBuffer::AttachColorTexture(const NonOwnPtr<uint32_t> id, int samples, GPUTextureFormat format, uint32_t width, uint32_t height, int index) const
     {
         bool multisample = samples > 1;
 
@@ -185,7 +183,7 @@ namespace lux
         }
     }
 
-    void FrameBuffer::AttachDepthTexture(uint32_t* id, GPUTextureFormat format, GPUFrameBufferAttachmentType type, uint32_t width, uint32_t height)
+    void FrameBuffer::AttachDepthTexture(const NonOwnPtr<uint32_t> id, GPUTextureFormat format, GPUFrameBufferAttachmentType type, uint32_t width, uint32_t height)
     {
         m_frameBuffer->BindFrameBuffer(m_id);
         GPUTexture::CreateTexture(&m_depthAttachment);
@@ -199,8 +197,8 @@ namespace lux
         GPUTexture::SetTextureParameterI(*id,TextureType::Texture2D, TextureParameter::TextureWrapR, TextureWrap::ClampToEdge);
         m_frameBuffer->CreateFrameBufferDepthTexture(m_depthAttachment);
 
-        m_frameBuffer->CheckFrameBufferStatus();
-
+        if (!CheckFrameBufferStatus())
+            CORE_ERROR("Frame buffer is not complete");
     }
 
     void FrameBuffer::CreateColorAttachment()
@@ -236,17 +234,17 @@ namespace lux
             }
     }
 
-    void FrameBuffer::Bind()
+    void FrameBuffer::Bind() const
     {
         m_frameBuffer->BindFrameBuffer(m_id, m_specs.width, m_specs.height);
     }
 
-    void FrameBuffer::Unbind()
+    void FrameBuffer::Unbind() const
     {
         m_frameBuffer->UnbindFrameBuffer();
     }
 
-    void FrameBuffer::RestoreDefaultFramebuffer(Window* window, int& width, int& height)
+    void FrameBuffer::RestoreDefaultFramebuffer(NonOwnPtr<Window> window, int& width, int& height) const
     {
         m_frameBuffer->RestoreDefaultFramebuffer(window, width, height);
         RenderCommand::SetViewport(0, 0, width, height);

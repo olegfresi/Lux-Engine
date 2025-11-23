@@ -33,6 +33,6 @@
 
 namespace lux
 {
-    unsigned char* LoadImageFromPath(std::filesystem::path path, int* width, int* height, int* channels, int reqComp);
+    unsigned char* LoadImageFromPath(const std::filesystem::path& path, int* width, int* height, int* channels, int reqComp);
     void FreeImage(unsigned char* data);
 }

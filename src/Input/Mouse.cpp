@@ -12,14 +12,14 @@ namespace lux
         m_dispatcher->EraseListener(m_listenerId);
     }
 
-    void Mouse::RegisterListeners()
+    void Mouse::RegisterListeners() const
     {
         m_dispatcher->RegisterListener<MouseDownEvent>(m_listenerId,
-                                                       [this](const MouseDownEvent& e) { OnMouseDown(e); }
+                                                       [](const MouseDownEvent& e) { OnMouseDown(e); }
         );
 
         m_dispatcher->RegisterListener<MouseReleaseEvent>(m_listenerId,
-                                                          [this](const MouseReleaseEvent& e) { OnMouseRelease(e); }
+                                                          [](const MouseReleaseEvent& e) { OnMouseRelease(e); }
         );
 
         m_dispatcher->RegisterListener<MouseMotionEvent>(m_listenerId,
@@ -27,16 +27,7 @@ namespace lux
         );
     }
 
-    void Mouse::OnMouseDown(const MouseDownEvent& e)
-    {
-    }
-
-    void Mouse::OnMouseRelease(const MouseReleaseEvent& e)
-    {
-
-    }
-
-    void Mouse::OnMouseMotion(const MouseMotionEvent& e)
+    void Mouse::OnMouseMotion(const MouseMotionEvent& e) const
     {
         InputKey key = { InputType::Mouse, static_cast<int>(e.m_button) };
         auto action = m_mapper->GetAction({key});
@@ -44,7 +35,7 @@ namespace lux
             m_dispatcher->PostEvent<ActionEvent>(action.value(), e.m_targetX, e.m_targetY);
     }
 
-    void Mouse::OnMouseScroll(const MouseScrollEvent& e)
+    void Mouse::OnMouseScroll(const MouseScrollEvent& e) const
     {
         InputKey key = { InputType::Mouse, static_cast<int>(e.m_button) };
         auto action = m_mapper->GetAction({key});

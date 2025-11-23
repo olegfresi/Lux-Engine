@@ -88,7 +88,7 @@ namespace lux
         Bind(slot);
     }
 
-    void Texture2D::GenerateMipmaps()
+    void Texture2D::GenerateMipmaps() const
     {
         GPUTexture::GenerateMipmaps(m_texId, m_specs.type);
     }

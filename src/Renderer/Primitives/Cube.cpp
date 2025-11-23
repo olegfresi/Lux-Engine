@@ -72,7 +72,6 @@ namespace lux
         m_shader->SetUniform("model", m_modelMatrix);
         m_shader->SetUniform("view", view);
         m_shader->SetUniform("projection", projection);
-        //m_shader->SetUniform("uColor", m_color);
         MeshRenderer::Draw(GPUDrawPrimitive::TRIANGLES, GPUPrimitiveDataType::UNSIGNED_INT, m_ebo.GetSize(), m_layoutScope);
     }
 

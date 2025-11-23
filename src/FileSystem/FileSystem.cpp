@@ -15,18 +15,18 @@ void FileSystem::CheckFileExtension(const std::filesystem::path& filePath, const
 std::string FileSystem::ToUpper(const std::string& s)
 {
     std::string result = s;
-    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    std::ranges::transform(result.begin(), result.end(), result.begin(), ::toupper);
     return result;
 }
 
 std::string FileSystem::ToLower(const std::string& s)
 {
     std::string result = s;
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    std::ranges::transform(result.begin(), result.end(), result.begin(), ::tolower);
     return result;
 }
 
-std::vector<std::string> FileSystem::Split(std::string line, std::string delim)
+std::vector<std::string> FileSystem::Split(std::string& line, const std::string& delim)
 {
     std::vector<std::string> tokens;
     size_t pos = 0;

@@ -42,10 +42,10 @@ namespace lux
         ShadowPass(Shader& depthShader, const FrameBufferSpecification& spec);
         ~ShadowPass() = default;
 
-        void Begin(const Scene& scene, const Matrix4f& lightSpaceMatrix, const Matrix4f& model);
-        void End(NonOwnPtr<Window> window);
-        void Execute();
-        void BindDepthTexture() noexcept;
+        void Begin(const Scene& scene, const Matrix4f& lightSpaceMatrix, const Matrix4f& model) const;
+        void End(NonOwnPtr<Window> window) const;
+        static void Execute() {}
+        void BindDepthTexture() const noexcept;
 
         FrameBuffer& GetFrameBuffer() & noexcept { return m_frameBuffer; }
 

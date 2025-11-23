@@ -62,12 +62,12 @@ namespace lux
         void static SetMouseScroll(const Vector2f& scroll = Vector2f{}) {}
 
         [[nodiscard]] static bool IsActionActive(const InputAction& action);
-        void RegisterListeners();
+        void RegisterListeners() const;
 
-        void OnMouseDown(const MouseDownEvent& e);
-        void OnMouseRelease(const MouseReleaseEvent& e);
-        void OnMouseMotion(const MouseMotionEvent& e);
-        void OnMouseScroll(const MouseScrollEvent& e);
+        static void OnMouseDown(const MouseDownEvent& e) {}
+        static void OnMouseRelease(const MouseReleaseEvent& e) {}
+        void OnMouseMotion(const MouseMotionEvent& e) const;
+        void OnMouseScroll(const MouseScrollEvent& e) const;
 
     private:
         static inline std::bitset<static_cast<size_t>(MouseButtons::MouseButtonLast)> m_buttonsDown;

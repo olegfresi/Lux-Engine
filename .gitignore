@@ -10,3 +10,15 @@ CMakeScripts/
 cmake_install.cmake
 CTestTestfile.cmake
 Makefile
+/thirdparty/SPIRV-Tools-diffConfig.cmake
+/thirdparty/SPIRV-Tools-linkConfig.cmake
+/thirdparty/SPIRV-Tools-lintConfig.cmake
+/thirdparty/SPIRV-Tools-optConfig.cmake
+/thirdparty/SPIRV-Tools-reduceConfig.cmake
+/thirdparty/SPIRV-Tools-toolsConfig.cmake
+/thirdparty/SPIRV-ToolsConfig.cmake
+/thirdparty/lib/
+/thirdparty/include/
+/thirdparty/libGLEW.a
+/thirdparty/CMakeDoxyfile.in
+/thirdparty/CMakeDoxygenDefaults.cmake

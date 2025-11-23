@@ -39,44 +39,44 @@ namespace lux
     {
     public:
         OpenGLShader(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath);
-        ~OpenGLShader();
+        ~OpenGLShader() override;
 
-        void Bind() const noexcept;
-        void Unbind() const noexcept;
+        void Bind() const noexcept override;
+        void Unbind() const noexcept override;
 
-        [[nodiscard]] bool IsBound() const noexcept;
-        void SetUniform1f(const std::string& name, float value) noexcept;
-        void SetUniform1i(const std::string& name, int value) noexcept;
+        [[nodiscard]] bool IsBound() const noexcept override;
+        void SetUniform1f(const std::string& name, float value) noexcept override;
+        void SetUniform1i(const std::string& name, int value) noexcept override;
 
-        void SetUniform2i(const std::string& name, int v0, int v1) noexcept;
-        void SetUniform2f(const std::string& name, float v0, float v1) noexcept;
+        void SetUniform2i(const std::string& name, int v0, int v1) noexcept override;
+        void SetUniform2f(const std::string& name, float v0, float v1) noexcept override;
 
-        void SetUniform3i(const std::string& name, int v0, int v1, int v2) noexcept;
-        void SetUniform3f(const std::string& name, float v0, float v1, float v2) noexcept;
+        void SetUniform3i(const std::string& name, int v0, int v1, int v2) noexcept override;
+        void SetUniform3f(const std::string& name, float v0, float v1, float v2) noexcept override;
 
-        void SetUniform4i(const std::string& name, int v0, int v1, int v2, int v3) noexcept;
-        void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) noexcept;
+        void SetUniform4i(const std::string& name, int v0, int v1, int v2, int v3) noexcept override;
+        void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) noexcept override;
 
-        void SetUniform1iv(const std::string& name, int* value, int count) noexcept;
-        void SetUniform1fv(const std::string& name, float* value, int count) noexcept;
+        void SetUniform1iv(const std::string& name, int* value, int count) noexcept override;
+        void SetUniform1fv(const std::string& name, float* value, int count) noexcept override;
 
-        void SetUniform2iv(const std::string& name, int* value, int count) noexcept;
-        void SetUniform2fv(const std::string& name, float* value, int count) noexcept;
+        void SetUniform2iv(const std::string& name, int* value, int count) noexcept override;
+        void SetUniform2fv(const std::string& name, float* value, int count) noexcept override;
 
-        void SetUniform3iv(const std::string& name, int* value, int count) noexcept;
-        void SetUniform3fv(const std::string& name, float* value, int count) noexcept;
+        void SetUniform3iv(const std::string& name, int* value, int count) noexcept override;
+        void SetUniform3fv(const std::string& name, float* value, int count) noexcept override;
 
-        void SetUniform4iv(const std::string& name, int* value, int count) noexcept;
-        void SetUniform4fv(const std::string& name, float* value, int count) noexcept;
+        void SetUniform4iv(const std::string& name, int* value, int count) noexcept override;
+        void SetUniform4fv(const std::string& name, float* value, int count) noexcept override;
 
-        void SetUniformMat3f(const std::string &name, const math::Matrix3f &mat) noexcept;
-        void SetUniformMat4f(const std::string &name, const math::Matrix4f &mat) noexcept;
+        void SetUniformMat3f(const std::string &name, const math::Matrix3f &mat) noexcept override;
+        void SetUniformMat4f(const std::string &name, const math::Matrix4f &mat) noexcept override;
 
-        int GetUniformLocation(const std::string& name);
+        int GetUniformLocation(const std::string& name) override;
 
-        unsigned int GetId() const noexcept { return m_programId; }
+        unsigned int GetId() const noexcept override { return m_programId; }
 
-        void PreprocessShader() noexcept;
+        void PreprocessShader() const noexcept override;
 
     private:
         unsigned int m_programId;

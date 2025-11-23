@@ -1,7 +1,6 @@
 #define GL_SILENCE_DEPRECATION
 #include "../../include/OpenGL/OpenGLRendererAPI.hpp"
 #include "../../include/OpenGL/OpenglError.hpp"
-#include "glfw/include/GLFW/glfw3.h"
 
 namespace lux
 {

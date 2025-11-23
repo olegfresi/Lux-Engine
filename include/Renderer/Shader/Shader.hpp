@@ -73,7 +73,7 @@ namespace lux
         virtual void SetUniformMat3f(const std::string& name, const math::Matrix3f& mat) noexcept = 0;
         virtual void SetUniformMat4f(const std::string& name, const math::Matrix4f& mat) noexcept = 0;
 
-        virtual void PreprocessShader() noexcept = 0;
+        virtual void PreprocessShader() const noexcept = 0;
 
         virtual int GetUniformLocation(const std::string& name) = 0;
         virtual uint32_t GetId() const noexcept = 0;
@@ -99,7 +99,7 @@ namespace lux
         template<typename T>
         void SetUniform(const std::string& name, T* value, int count) noexcept;
 
-        void PreprocessShader() noexcept;
+        void PreprocessShader() const noexcept;
 
         int GetUniformLocation(const std::string& name) noexcept;
         uint32_t GetId() const noexcept;

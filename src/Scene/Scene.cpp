@@ -62,23 +62,23 @@ namespace lux
 
     }
 
-    void Scene::AddMesh(Ref<Mesh> mesh) noexcept
+    void Scene::AddMesh(const Ref<Mesh>& mesh) noexcept
     {
         m_meshes.push_back(mesh);
     }
 
-    void Scene::RemoveMesh(Ref<Mesh> mesh) noexcept
+    void Scene::RemoveMesh(const Ref<Mesh>& mesh) noexcept
     {
         std::input_or_output_iterator auto new_end = std::ranges::remove(m_meshes, mesh).begin();
         m_meshes.erase(new_end, m_meshes.end());
     }
 
-    void Scene::AddPrimitive(Ref<IPrimitive> primitive) noexcept
+    void Scene::AddPrimitive(const Ref<IPrimitive>& primitive) noexcept
     {
         m_primitives.push_back(primitive);
     }
 
-    void Scene::RemovePrimitive(Ref<IPrimitive> primitive) noexcept
+    void Scene::RemovePrimitive(const Ref<IPrimitive>& primitive) noexcept
     {
         std::input_or_output_iterator auto new_end = std::ranges::remove(m_primitives, primitive).begin();
         m_primitives.erase(new_end, m_primitives.end());

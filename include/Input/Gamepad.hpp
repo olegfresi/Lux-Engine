@@ -47,14 +47,14 @@ namespace lux
         Gamepad& operator=(Gamepad&) = delete;
 
         [[nodiscard]] static bool IsActionActive(const InputAction& action);
-        void RegisterListeners();
-        void Update(double deltaTime);
+        void RegisterListeners() const;
+        void Update(double deltaTime) const;
 
-        void OnButtonPress(const GamepadButtonPressEvent& e);
-        void OnButtonRelease(const GamepadButtonReleaseEvent& e);
-        void OnGamepadAxis(const GamepadAxisEvent& e);
-        void OnGamepadConnected(const GamepadConnectedEvent& e);
-        void OnGamepadDisconnected(const GamepadDisconnectedEvent& e);
+        void OnButtonPress(const GamepadButtonPressEvent& e) const;
+        void OnButtonRelease(const GamepadButtonReleaseEvent& e) const;
+        void OnGamepadAxis(const GamepadAxisEvent& e) const;
+        static void OnGamepadConnected(const GamepadConnectedEvent& e);
+        static void OnGamepadDisconnected(const GamepadDisconnectedEvent& e);
 
     private:
         std::map<uint8_t, bool> m_buttons{};

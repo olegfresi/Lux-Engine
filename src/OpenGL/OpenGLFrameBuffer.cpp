@@ -79,7 +79,7 @@ namespace lux
 
     void OpenGLFrameBuffer::RestoreDefaultFramebuffer(Window* window, int& width, int& height) const noexcept
     {
-        GLCheck(glfwGetFramebufferSize((GLFWwindow *)window->GetNativeWindowHandle(), &width, &height));
+        GLCheck(glfwGetFramebufferSize(static_cast<GLFWwindow*>(window->GetNativeWindowHandle()), &width, &height));
         GLCheck(glViewport(0, 0, width, height));
     }
 }

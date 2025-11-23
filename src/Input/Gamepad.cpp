@@ -20,7 +20,7 @@ namespace lux
         return s_activeActions.test(static_cast<size_t>(action));
     }
 
-    void Gamepad::RegisterListeners()
+    void Gamepad::RegisterListeners() const
     {
         m_dispatcher->RegisterListener<GamepadButtonPressEvent>(m_listenerId,
                                                                 [this](const GamepadButtonPressEvent& e) {
@@ -33,13 +33,13 @@ namespace lux
                                                         [this](const GamepadAxisEvent& e) { OnGamepadAxis(e); });
 
         m_dispatcher->RegisterListener<GamepadConnectedEvent>(m_listenerId,
-                                                              [this](const GamepadConnectedEvent& e) { OnGamepadConnected(e); });
+                                                              [](const GamepadConnectedEvent& e) { OnGamepadConnected(e); });
 
         m_dispatcher->RegisterListener<GamepadDisconnectedEvent>(m_listenerId,
-                                                                 [this](const GamepadDisconnectedEvent& e) { OnGamepadDisconnected(e); });
+                                                                 [](const GamepadDisconnectedEvent& e) { OnGamepadDisconnected(e); });
     }
 
-    void Gamepad::Update(double deltaTime)
+    void Gamepad::Update(double deltaTime) const
     {
         if (IsGamepadPresent())
         {
@@ -49,7 +49,7 @@ namespace lux
                 float rightX = state.axes[static_cast<int>(GamepadAxes::AxisRightX)];
                 float rightY = state.axes[static_cast<int>(GamepadAxes::AxisRightY)];
 
-                const float deadzone = 0.2f;
+                constexpr float deadzone = 0.2f;
                 if (abs(rightX) > deadzone || abs(rightY) > deadzone)
                     m_dispatcher->PostEvent<GamepadLookEvent>(rightX, rightY, deltaTime);
 
@@ -145,39 +145,37 @@ namespace lux
         }
     }
 
-    void Gamepad::OnButtonPress(const GamepadButtonPressEvent& e)
+    void Gamepad::OnButtonPress(const GamepadButtonPressEvent& e) const
     {
         if (e.m_button == GamepadKeys::ButtonBack)
             m_dispatcher->PostEvent<WindowCloseEvent>();
 
         InputKey key = { InputType::Gamepad, static_cast<int>(e.m_button) };
-        auto action = m_mapper->GetAction({key});
 
-        if (action)
+        if (auto action = m_mapper->GetAction({key}))
         {
             m_dispatcher->PostEvent<ActionEvent>( action.value(), true );
             s_activeActions.set( static_cast<size_t>(action.value()));
         }
     }
 
-    void Gamepad::OnButtonRelease(const GamepadButtonReleaseEvent& e)
+    void Gamepad::OnButtonRelease(const GamepadButtonReleaseEvent& e) const
     {
         InputKey key = { InputType::Gamepad, static_cast<int>(e.m_button) };
-        auto action = m_mapper->GetAction({key});
 
-        if (action)
+        if (auto action = m_mapper->GetAction({key}))
         {
             s_activeActions.reset( static_cast<size_t>(action.value()));
             m_dispatcher->PostEvent<ActionEvent>( action.value(), false );
         }
     }
 
-    void Gamepad::OnGamepadAxis(const GamepadAxisEvent& e)
+    void Gamepad::OnGamepadAxis(const GamepadAxisEvent& e) const
     {
         InputKey key = { InputType::Gamepad, e.m_axis };
-        auto action = m_mapper->GetAction({key});
 
-        if (action)
+
+        if (auto action = m_mapper->GetAction({key}))
         {
             m_dispatcher->PostEvent<ActionEvent>( action.value(), true );
             s_activeActions.set( static_cast<size_t>(action.value()));

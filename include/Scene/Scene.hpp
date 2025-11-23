@@ -57,12 +57,12 @@ namespace lux
         void RemoveGameObject(const Ref<GameObject>& gameObject) noexcept;
         void SetCamera(NonOwnPtr<Camera> camera) noexcept;
 
-        void AddMesh(Ref<Mesh> mesh) noexcept;
-        void RemoveMesh(Ref<Mesh> mesh) noexcept;
+        void AddMesh(const Ref<Mesh>& mesh) noexcept;
+        void RemoveMesh(const Ref<Mesh>& mesh) noexcept;
         void SetupMeshes() const noexcept;
 
-        void AddPrimitive(Ref<IPrimitive> primitive) noexcept;
-        void RemovePrimitive(Ref<IPrimitive> primitive) noexcept;
+        void AddPrimitive(const Ref<IPrimitive>& primitive) noexcept;
+        void RemovePrimitive(const Ref<IPrimitive>& primitive) noexcept;
 
         void AddLight(const Light& light) noexcept;
         void RemoveLight(const Light& light) noexcept;

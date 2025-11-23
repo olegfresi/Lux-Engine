@@ -29,7 +29,6 @@
  * SOFTWARE.
  */
 #pragma once
-#include <string>
 #include "../Event/Events.hpp"
 #include "../Event/EventSystem.hpp"
 #include "../Application/Pointers.hpp"
@@ -47,10 +46,10 @@ namespace lux
         Keyboard(const Keyboard&) = delete;
         Keyboard& operator=(Keyboard&) = delete;
 
-        void OnKeyPress(const KeyPressEvent& e);
-        void OnKeyRelease(const KeyReleaseEvent& e);
+        void OnKeyPress(const KeyPressEvent& e) const;
+        void OnKeyRelease(const KeyReleaseEvent& e) const;
 
-        void RegisterListeners();
+        void RegisterListeners() const;
 
     private:
         uint32_t m_listenerId = TypeID<Keyboard>();

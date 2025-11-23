@@ -1,6 +1,5 @@
 #include "../../include/Renderer/Mesh/Mesh.hpp"
 #include "../../include/OpenGL/MeshRenderer.hpp"
-#include "../../include/Application/EngineSettings.hpp"
 
 namespace lux
 {

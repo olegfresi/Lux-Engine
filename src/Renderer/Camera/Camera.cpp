@@ -4,31 +4,27 @@ namespace lux
 {
     Camera::Camera()
     {
-        m_pos = math::Vector3f(0.0f, 0.0f, 0.0f);
-        m_front = math::Vector3f(0.0f, 0.0f, -1.0f);
-        m_up = math::Vector3f(0.0f, 0.0f, 0.0f);
-        m_right = math::Cross(GetFront(), GetUp()).Normalize();
+        m_pos = Vector3f(0.0f, 0.0f, 0.0f);
+        m_front = Vector3f(0.0f, 0.0f, -1.0f);
+        m_up = Vector3f(0.0f, 0.0f, 0.0f);
+        m_right = Cross(GetFront(), GetUp()).Normalize();
 
         m_yaw = 0.0f;
         m_pitch = 0.0f;
         m_fov = 0.0f;
 
-        m_view = math::Matrix4f::LookAt( m_pos,
-                                         m_pos + m_front,
-                                         m_up);
+        m_view = Matrix4f::LookAt( m_pos, m_pos + m_front, m_up);
 
-        m_projection = math::Matrix4f::Perspective( m_fov, 0, 1.0f, 100.0f );
+        m_projection = Matrix4f::Perspective( m_fov, 0, 1.0f, 100.0f );
     }
 
-    Camera::Camera(Vector3f pos, Vector3f front, Vector3f up, float aspectRatio, float fov, float yaw, float pitch, float near, float far) noexcept :
-                m_pos{ pos }, m_front{ front }, m_up{ up }, m_right{ math::Cross(GetFront(), GetUp()).Normalize() },
+    Camera::Camera(const Vector3f& pos, const Vector3f& front, const Vector3f& up, float aspectRatio, float fov, float yaw, float pitch, float near, float far) noexcept :
+                m_pos{ pos }, m_front{ front }, m_up{ up }, m_right{Cross(GetFront(), GetUp()).Normalize() },
                 m_aspectRatio{ aspectRatio }, m_fov{ fov }, m_yaw{ yaw }, m_pitch{ pitch }
     {
-        m_view = math::Matrix4f::LookAt( pos,
-                                         pos + front,
-                                         up).Transpose();
+        m_view = Matrix4f::LookAt( pos, pos + front, up).Transpose();
 
-        m_projection = math::Matrix4f::Perspective( m_fov, aspectRatio, near, far );
+        m_projection = Matrix4f::Perspective( m_fov, aspectRatio, near, far );
     }
 
     void Camera::SetPosition(const Vector3f &position) noexcept
@@ -103,15 +99,5 @@ namespace lux
     void Camera::SetFar(float far) noexcept
     {
         m_far = far;
-    }
-
-    void Camera::ZoomIn(float amount) noexcept
-    {
-
-    }
-
-    void Camera::ZoomOut(float amount) noexcept
-    {
-
     }
 }

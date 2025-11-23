@@ -43,14 +43,14 @@ namespace lux::filesys
 
         bool IsOpen() const;
         bool GetLine(std::string &line);
-        bool HasNextLine();
+        bool HasNextLine() const;
 
         std::string FindLineContaining(const std::string& keyword);
         std::string GetValueForKey(const std::string& key, char separator);
         std::string GetNextLine();
 
         std::unordered_map<std::string, std::string> ReadAsKeyValue(char separator);
-        std::vector<std::string> SplitLine(const std::string& line, const std::string& delimiter);
+        std::vector<std::string> SplitLine(const std::string& line, const std::string& delimiter) const;
 
         void Reset();
         void Close();

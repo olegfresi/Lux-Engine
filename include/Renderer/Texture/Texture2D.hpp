@@ -81,7 +81,7 @@ namespace lux
         void Unbind() const noexcept override;
 
         void Draw(uint32_t slot) const noexcept;
-        void GenerateMipmaps();
+        void GenerateMipmaps() const;
 
         int GetWidth() const noexcept override { return m_specs.width; }
         int GetHeight() const noexcept override { return m_specs.height; }

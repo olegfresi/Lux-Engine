@@ -42,6 +42,6 @@ struct FileSystem
     static std::string ToUpper(const std::string& s);
     static std::string ToLower(const std::string& s);
 
-    static std::vector<std::string> Split(std::string line, std::string delim);
+    static std::vector<std::string> Split(std::string& line, const std::string& delim);
     static std::vector<std::filesystem::path> GetFilesInDirectory(const std::string& directoryPath);
 };

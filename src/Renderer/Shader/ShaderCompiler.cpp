@@ -31,7 +31,7 @@ namespace lux
         InitResources(resources);
 
         int defaultVersion = 450;
-        EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules);
+        EShMessages messages = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
 
         if (!shader.parse(&resources, defaultVersion, false, messages)) {
             if (errorLog) {
@@ -87,7 +87,7 @@ namespace lux
         Resources.maxProgramTexelOffset = 7;
 
         int defaultVersion = 410;
-        EShMessages messages = (EShMessages)(EShMsgSpvRules | EShMsgVulkanRules | EShMsgAST);
+        EShMessages messages = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules | EShMsgAST);
 
         if (!shader.parse(&Resources, defaultVersion, false, messages))
         {

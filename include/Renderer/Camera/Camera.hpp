@@ -40,7 +40,8 @@ namespace lux
     {
     public:
         Camera();
-        Camera(Vector3f pos, Vector3f front, Vector3f up, float aspectRatio, float fov, float yaw, float pitch, float near = 1.0f, float far = 1000.0f) noexcept;
+        Camera(const Vector3f& pos, const Vector3f& front, const Vector3f& up, float aspectRatio,
+               float fox, float yaw, float pitch, float near = 1.0f, float far = 1000.0f) noexcept;
 
         [[nodiscard]] const auto& GetViewToScreen() const noexcept { return m_viewToScreen; }
         [[nodiscard]] const auto& GetView() const noexcept { return m_view; }
@@ -73,8 +74,8 @@ namespace lux
         void UpdateView() noexcept;
         void UpdateProjection() noexcept;
 
-        void ZoomIn(float amount) noexcept;
-        void ZoomOut(float amount) noexcept;
+        static void ZoomIn(float amount) noexcept {}
+        static void ZoomOut(float amount) noexcept {}
 
     private:
         Vector3f m_pos;

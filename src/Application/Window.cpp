@@ -15,6 +15,9 @@ namespace lux
                 return CreateScope<MacOsWindow>(settings, dispatcher);
             case Os::LINUX:
                 return CreateScope<MacOsWindow>(settings, dispatcher);
+
+            default:
+                assert(false);
         }
     }
 

@@ -9,7 +9,7 @@ namespace lux
 
     }
 
-    void ShadowPass::Begin(const Scene& scene, const Matrix4f& lightSpaceMatrix, const Matrix4f& model)
+    void ShadowPass::Begin(const Scene& scene, const Matrix4f& lightSpaceMatrix, const Matrix4f& model) const
     {
         RenderCommand::Clear();
         RenderCommand::EnableDepthTest(true, DepthTestFunction::LESS_OR_EQUAL);
@@ -38,22 +38,20 @@ namespace lux
         m_frameBuffer.Unbind();
     }
 
-    void ShadowPass::End(NonOwnPtr<Window> window)
+    void ShadowPass::End(NonOwnPtr<Window> window) const
     {
         RenderCommand::Clear();
         RenderCommand::ClearDepth();
         int width = 0;
         int height = 0;
         m_frameBuffer.RestoreDefaultFramebuffer(window, width, height);
-        GLCheck(glfwGetFramebufferSize((GLFWwindow *)window->GetNativeWindowHandle(), &width, &height));
+        GLCheck(glfwGetFramebufferSize(static_cast<GLFWwindow*>(window->GetNativeWindowHandle()), &width, &height));
         GLCheck(glViewport(0, 0, width, height));
     }
 
-    void ShadowPass::BindDepthTexture() noexcept
+    void ShadowPass::BindDepthTexture() const noexcept
     {
         m_frameBuffer.BindDepthTexture(m_shadowTextureUnit);
     }
 
-    void ShadowPass::Execute()
-    {}
 }

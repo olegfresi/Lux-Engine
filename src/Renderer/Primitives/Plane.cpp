@@ -19,8 +19,8 @@ namespace lux
     };
 
 
-    Plane::Plane(NonOwnPtr<Shader> shader, const math::Vector3f& position, const math::Vector2f& size, const Color& color) :
-                 m_layoutScope(CreateVertexLayout()), m_position{position}, m_size{size}, m_color{color}, m_shader { shader }
+    Plane::Plane(NonOwnPtr<Shader> shader, const Vector3f& position, const Vector2f& size, const Color& color) :
+                 m_layoutScope(CreateVertexLayout()), m_position{position}, m_size{size}, m_color{color}, m_texture{}, m_shader { shader }
     {
         m_vertices = planeVertices;
         m_indices =

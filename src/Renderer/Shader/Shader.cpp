@@ -1,10 +1,5 @@
 #include <fstream>
-#include <sstream>
-#include <iostream>
 #include "../../include/Renderer/Shader/Shader.hpp"
-#include "../../include/OpenGL/OpenglError.hpp"
-#include "../../../include/Renderer/Common/GPU.hpp"
-#include "../../include/Renderer/Shader/ShaderCompiler.hpp"
 #include "../../include/Application/EngineSettings.hpp"
 #include "../../include/OpenGL/OpenGLShader.hpp"
 
@@ -25,11 +20,14 @@ namespace lux
 
             case GraphicsAPI::METAL:
                 break;
+
+            default:
+                assert(false);
         }
     }
 
     Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
-        : m_shaderAPI(CreateShader(vertexPath, fragmentPath)){}
+        : m_program{nullptr}, m_shaderAPI(CreateShader(vertexPath, fragmentPath)){}
 
     void Shader::Bind() const noexcept
     {
@@ -56,7 +54,7 @@ namespace lux
         return m_shaderAPI->GetId();
     }
 
-    void Shader::PreprocessShader() noexcept
+    void Shader::PreprocessShader() const noexcept
     {
         m_shaderAPI->PreprocessShader();
     }

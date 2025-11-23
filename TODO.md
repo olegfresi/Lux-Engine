@@ -1,0 +1,20 @@
+- Write better README
+- Write documentation
+- Write C++ coding standard 
+- Fix todos in code
+- Fix from cmake setting up working directory
+- Fix setup scripts
+- Implement reflection
+- Finish memory system
+- Implement GUI system
+- Change mesh representation using vertex struct and naming attributes
+- Implement material system based on json
+- Implement shader automatic binding to properties such meshes and materials
+- Implement shader validation
+- Implement instancing
+- Implement batched rendering
+- Implement frustum culling
+- Implement forward rendering
+- Implement deferred rendering
+- Implement tagged pointers and morton codes
+- Make precompiled header file

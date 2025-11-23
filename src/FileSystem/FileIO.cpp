@@ -97,7 +97,7 @@ namespace lux::filesys
         return false;
     }
 
-    bool FileReader::HasNextLine()
+    bool FileReader::HasNextLine() const
     {
         return !file_.eof();
     }
@@ -123,7 +123,7 @@ namespace lux::filesys
 
     size_t FileReader::GetCurrentLine() const { return currentLine; }
 
-    std::vector<std::string> FileReader::SplitLine(const std::string& line, const std::string& delimiter)
+    std::vector<std::string> FileReader::SplitLine(const std::string& line, const std::string& delimiter) const
     {
         std::vector<std::string> tokens;
         size_t start = 0;

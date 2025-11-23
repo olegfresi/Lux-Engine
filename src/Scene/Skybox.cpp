@@ -40,11 +40,11 @@ namespace lux
         RenderCommand::EnableDepthWrite(false);
         RenderCommand::EnableFaceCulling(true, GPUCullFaceType::FRONT, GPUCullFaceOrder::COUNTER_CLOCKWISE);
 
-        //m_shader->Bind();
-        //m_shader->SetUniform("model", model);
-        //m_shader->SetUniform("view", view);
-        //m_shader->SetUniform("projection", projection);
-        //m_cubeMap->DrawCubeMap();
+        m_shader->Bind();
+        m_shader->SetUniform("model", model);
+        m_shader->SetUniform("view", view);
+        m_shader->SetUniform("projection", projection);
+        m_cubeMap->DrawCubeMap();
         m_cube.Draw(view, projection);
     }
 }

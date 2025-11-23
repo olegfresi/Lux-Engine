@@ -113,13 +113,13 @@ namespace lux
 
         void Invalidate();
         void Resize(uint32_t width, uint32_t height);
-        void Bind();
-        void Unbind();
-        void CheckFrameBufferStatus() const;
-        void RestoreDefaultFramebuffer(Window* window, int& width, int& height);
+        void Bind() const;
+        void Unbind() const;
+        bool CheckFrameBufferStatus() const;
+        void RestoreDefaultFramebuffer(NonOwnPtr<Window> window, int& width, int& height) const;
 
-        void AttachColorTexture(uint32_t* id, int samples, GPUTextureFormat format, uint32_t width, uint32_t height, int index);
-        void AttachDepthTexture(uint32_t* id, GPUTextureFormat format, GPUFrameBufferAttachmentType type, uint32_t width, uint32_t height);
+        void AttachColorTexture(const NonOwnPtr<uint32_t>, int samples, GPUTextureFormat format, uint32_t width, uint32_t height, int index) const;
+        void AttachDepthTexture(const NonOwnPtr<uint32_t> id, GPUTextureFormat format, GPUFrameBufferAttachmentType type, uint32_t width, uint32_t height);
         void CreateColorAttachment();
         void CreateDepthStencilAttachment();
         void BindDepthTexture(uint32_t unit) const { GPUTexture::Bind(m_depthAttachment, unit, TextureType::Texture2D); }

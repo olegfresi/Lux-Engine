@@ -5,7 +5,7 @@
 
 namespace lux
 {
-    unsigned char* LoadImageFromPath(std::filesystem::path path, int* width, int* height, int* channels, int reqComp)
+    unsigned char* LoadImageFromPath(const std::filesystem::path& path, int* width, int* height, int* channels, int reqComp)
     {
         auto data = stbi_load( path.c_str(), width, height, channels, reqComp);
         if (!data) { CORE_ERROR("Failed to load texture: {}", path.string()); }

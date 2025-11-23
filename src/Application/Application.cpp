@@ -248,13 +248,9 @@ namespace lux
         }
 
         ReflectionVisitor visitor;
-        const glslang::TIntermediate* intermediate = program.getIntermediate(EShLangVertex);
-        if (intermediate)
-        {
-            TIntermNode* root = intermediate->getTreeRoot();
-            if (root)
+        if (const glslang::TIntermediate* intermediate = program.getIntermediate(EShLangVertex))
+            if (TIntermNode* root = intermediate->getTreeRoot())
                 root->traverse(&visitor);
-        }
 
         PrintShaderReflection(visitor.data);
 

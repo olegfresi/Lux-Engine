@@ -113,7 +113,7 @@ namespace lux
         if(!IsBound())
             CORE_ERROR("Shader is not bound. Cannot get uniform location");
 
-        if (m_UniformLocation.contains( name ))
+        if (m_UniformLocation.contains(name))
             return m_UniformLocation[name];
 
         GLCheck(int location = glGetUniformLocation(m_programId, name.c_str()));
@@ -215,7 +215,7 @@ namespace lux
         GLCheck(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, mat.Data()));
     }
 
-    void OpenGLShader::PreprocessShader() noexcept
+    void OpenGLShader::PreprocessShader() const noexcept
     {
 
     }
