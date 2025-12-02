@@ -31,7 +31,6 @@
 #pragma once
 #include "Vector.hpp"
 #include "Matrix4.hpp"
-#include "MathUtils.hpp"
 
 
 namespace lux::math

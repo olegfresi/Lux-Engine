@@ -43,8 +43,6 @@ namespace lux
 };
 
 
-
-
     Cube::Cube(const Vector3f& position, const Vector3f& size, const Vector3f& color,  NonOwnPtr<Shader> shader) :
                 m_layoutScope{CreateVertexLayout()}, m_texture{}, m_position{position},
                 m_size{size}, m_color{color}, m_shader {shader}
@@ -63,7 +61,14 @@ namespace lux
         m_modelMatrix = Matrix4f::Translate(m_position) * Matrix4f::Scale(m_size);
         m_vbo.SetData(m_vertices, BufferUsage::StaticDraw, m_layoutScope);
         m_ebo.SetData(m_indices, BufferUsage::StaticDraw, m_layoutScope);
-        m_layoutScope->SetupLayout(m_layout);
+
+
+        m_layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        m_layout.Push<Vector2f>(GPUPrimitiveDataType::FLOAT, false);
+        m_layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        m_layout.Finalize();
+        std::vector<std::pair<const Layout&, const Buffer&>> vec{{m_layout, m_vbo}};
+        m_layoutScope->SetupLayout(vec);
     }
 
     void Cube::Draw(const Matrix4f& view, const Matrix4f& projection)

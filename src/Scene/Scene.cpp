@@ -1,4 +1,5 @@
 #include "../../include/Scene/Scene.hpp"
+#include "../../include/Renderer/Mesh/Mesh.hpp"
 
 namespace lux
 {
@@ -12,56 +13,6 @@ namespace lux
         CORE_ASSERT(m_camera != nullptr, "Camera is null")
     }
 
-    void Scene::LoadScene() noexcept
-    {
-
-    }
-
-    void Scene::UnloadScene() noexcept
-    {
-
-    }
-
-    void Scene::Terminate() noexcept
-    {
-
-    }
-
-    void Scene::Update() noexcept
-    {
-
-    }
-
-    void Scene::SaveToFile(const std::string &filePath) noexcept
-    {
-
-    }
-
-    void Scene::LoadFromFile(const std::string &filePath) noexcept
-    {
-
-    }
-
-    void Scene::AddGameObject(const Ref<GameObject> &gameObject) noexcept
-    {
-
-    }
-
-    void Scene::RemoveGameObject(const Ref<GameObject> &gameObject) noexcept
-    {
-
-    }
-
-    void Scene::AddLight(const Light &light) noexcept
-    {
-
-    }
-
-    void Scene::RemoveLight(const Light &light) noexcept
-    {
-
-    }
-
     void Scene::AddMesh(const Ref<Mesh>& mesh) noexcept
     {
         m_meshes.push_back(mesh);
@@ -69,7 +20,7 @@ namespace lux
 
     void Scene::RemoveMesh(const Ref<Mesh>& mesh) noexcept
     {
-        std::input_or_output_iterator auto new_end = std::ranges::remove(m_meshes, mesh).begin();
+        auto new_end = std::ranges::remove_if(m_meshes, [&](const Ref<Mesh>& m) { return m == mesh; }).begin();
         m_meshes.erase(new_end, m_meshes.end());
     }
 
@@ -96,6 +47,24 @@ namespace lux
             mesh->GetShader()->SetUniform("projection", m_camera->GetProjection());
             mesh->SetupMesh();
         }
+    }
+
+    std::unordered_map<NonOwnPtr<Mesh>, std::vector<Transform>, MeshPtrHash, MeshPtrEq>
+    Scene::GroupMeshInstances(const std::vector<SceneObject>& objects)
+    {
+        std::unordered_map<NonOwnPtr<Mesh>, std::vector<Transform>, MeshPtrHash, MeshPtrEq> grouped;
+
+        for (const auto& obj : objects)
+        {
+            auto it = grouped.find(obj.mesh);
+
+            if (it != grouped.end())
+                it->second.push_back(obj.transform);
+            else
+                grouped.emplace(obj.mesh, std::vector{ obj.transform });
+        }
+
+        return grouped;
     }
 
     void Scene::SetCamera(NonOwnPtr<Camera> camera) noexcept

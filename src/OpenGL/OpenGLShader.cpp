@@ -125,6 +125,11 @@ namespace lux
         return location;
     }
 
+    void OpenGLShader::SetUniform1b(const std::string &name, bool value) noexcept
+    {
+        GLCheck(glUniform1i(GetUniformLocation(name), value));
+    }
+
     void OpenGLShader::SetUniform1i(const std::string &name, int value) noexcept
     {
         GLCheck(glUniform1i(GetUniformLocation(name), value));

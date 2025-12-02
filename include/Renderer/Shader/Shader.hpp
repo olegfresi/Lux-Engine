@@ -48,6 +48,7 @@ namespace lux
 
         virtual void SetUniform1i(const std::string& name, int value) noexcept = 0;
         virtual void SetUniform1f(const std::string& name, float value) noexcept = 0;
+        virtual void SetUniform1b(const std::string& name, bool value) noexcept = 0;
 
         virtual void SetUniform2i(const std::string& name, int v0, int v1) = 0;
         virtual void SetUniform2f(const std::string& name, float v0, float v1) = 0;
@@ -131,6 +132,12 @@ namespace lux
     inline void Shader::SetUniform<int>(const std::string& name, int value) noexcept
     {
         m_shaderAPI->SetUniform1i(name, value);
+    }
+
+    template<>
+    inline void Shader::SetUniform<bool>(const std::string& name, bool value) noexcept
+    {
+        m_shaderAPI->SetUniform1b(name, value);
     }
 
     template<>

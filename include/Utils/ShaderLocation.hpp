@@ -1,8 +1,8 @@
 /*
- * Project: TestProject
- * File: MathUtils.hpp
+ * Project: LuxEngine
+ * File: ShaderLocation.hpp
  * Author: olegfresi
- * Created: 07/02/25 18:57
+ * Created: 26/11/25 11:32
  * 
  * Copyright © 2025 olegfresi
  * 
@@ -29,44 +29,43 @@
  * SOFTWARE.
  */
 #pragma once
-#include <numbers>
+#include <string>
+#include <map>
 
-namespace lux::math
+
+class ShaderLocationBinding
 {
-    constexpr double EPSILON = 1e-8;
+public:
 
-    constexpr double DegToRad(float deg)
+    ShaderLocationBinding() = default;
+
+    static void Bind(uint32_t location, std::string name = "")
     {
-        return deg * std::numbers::pi / 180;
+       m_locations.insert({name, location});
     }
 
-    [[nodiscard]]  constexpr double RadToDeg(float rad)
+    static bool ContainsBindingByName(const std::string& name)
     {
-        return rad * 180 / std::numbers::pi;
+        return m_locations.contains(name);
     }
 
-    struct Angle
+    static std::optional<std::string> IsLocationBound(uint32_t location)
     {
-        float angle;
-    };
+        if (m_bindings.contains(location))
+            return std::optional(m_bindings[location]);
 
-    template <typename T>
-    T Clamp(T value, T min, T max)
-    {
-        return value < min ? min : value > max ? max : value;
+        for (const auto& [key, val] : m_locations)
+            if (val == location)
+            {
+                m_bindings.insert({location, key});
+                return std::optional(key);
+            }
+
+        return  std::nullopt;
     }
 
-    template <typename T>
-    T Lerp(T a, T b, T t)
-    {
-        return a + t * (b - a);
-    }
+private:
 
-    struct MathException
-    {
-        explicit MathException(const std::string& message)
-        {
-            throw std::runtime_error(message);
-        }
-    };
-}
+    static inline std::map<std::string, uint32_t> m_locations;
+    static inline std::map<uint32_t, std::string> m_bindings;
+};

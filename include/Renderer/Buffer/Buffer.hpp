@@ -43,7 +43,7 @@ namespace lux
     {
     public:
         virtual ~IVertexLayout() = default;
-        virtual void SetupLayout(const Layout& l) const noexcept = 0;
+        virtual void SetupLayout(const std::vector<std::pair<const Layout&, const Buffer&>>& vbos) const noexcept = 0;
         virtual void Bind() const noexcept = 0;
         virtual void Unbind() const noexcept = 0;
         virtual std::unique_ptr<IVertexLayout> Clone() const = 0;
@@ -88,9 +88,9 @@ namespace lux
         template <typename T>
         void SetData(const std::vector<T>& data, BufferUsage usage, const Scope<IVertexLayout>& l) noexcept
         {
-            CORE_ASSERT(l != nullptr, "Vertex layout is null");
+            CORE_ASSERT(l != nullptr, "Layout is null");
             l->Bind();
-            m_buffer->SetDataSize(data.size() * sizeof( T ));
+            m_buffer->SetDataSize(data.size() * sizeof(T));
             m_buffer->SetData(data.data(), usage);
             l->Unbind();
         }

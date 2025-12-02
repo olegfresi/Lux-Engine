@@ -103,14 +103,21 @@ namespace lux
             GLCheck(glGenVertexArrays(1, &m_vao));
         }
 
-        void SetupLayout(const Layout& l) const noexcept override
+        void SetupLayout(const std::vector<std::pair<const Layout&, const Buffer&>>& vbos) const noexcept override
         {
             Bind();
-            for (const auto &attr : l.attributes)
+
+            for (const auto& [l, vbo] : vbos)
             {
-                GLCheck(glEnableVertexAttribArray(attr.index));
-                GLCheck(glVertexAttribPointer(attr.index, attr.size, static_cast<GLenum >(attr.type), attr.normalized, attr.stride, attr.pointer));
+                vbo.BindBuffer();
+                for (const auto &attr : l.attributes)
+                {
+                    GLCheck(glEnableVertexAttribArray(attr.index));
+                    GLCheck(glVertexAttribPointer(attr.index, attr.size, static_cast<GLenum >(attr.type), attr.normalized, attr.stride, attr.pointer));
+                    GLCheck(glVertexAttribDivisor(attr.index, attr.divisor));
+                }
             }
+
             Unbind();
         }
 
@@ -141,14 +148,10 @@ namespace lux
         {
             case GraphicsAPI::OPENGL:
                 return std::make_unique<OpenGLVertexLayout>();
-            case GraphicsAPI::VULKAN:
-                break;
-            case GraphicsAPI::DIRECTX:
-                break;
-            case GraphicsAPI::METAL:
-                break;
+
+            default:
+                return nullptr;
         }
 
-        return nullptr;
     }
 }

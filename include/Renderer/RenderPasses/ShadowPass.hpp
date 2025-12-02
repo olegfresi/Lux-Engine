@@ -54,7 +54,7 @@ namespace lux
 
     private:
         FrameBuffer m_frameBuffer;
-        uint32_t m_shadowSize;
+        uint32_t m_shadowSize = 1024;
         Shader& m_depthShader;
         uint32_t m_shadowTextureUnit;
     };

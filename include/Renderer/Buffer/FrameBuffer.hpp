@@ -118,10 +118,10 @@ namespace lux
         bool CheckFrameBufferStatus() const;
         void RestoreDefaultFramebuffer(NonOwnPtr<Window> window, int& width, int& height) const;
 
-        void AttachColorTexture(const NonOwnPtr<uint32_t>, int samples, GPUTextureFormat format, uint32_t width, uint32_t height, int index) const;
-        void AttachDepthTexture(const NonOwnPtr<uint32_t> id, GPUTextureFormat format, GPUFrameBufferAttachmentType type, uint32_t width, uint32_t height);
         void CreateColorAttachment();
         void CreateDepthStencilAttachment();
+        void AttachColorTexture(const NonOwnPtr<uint32_t>, int samples, GPUTextureFormat format, uint32_t width, uint32_t height, int index) const;
+        void AttachDepthTexture(const NonOwnPtr<uint32_t> id, GPUTextureFormat format, GPUFrameBufferAttachmentType type, uint32_t width, uint32_t height);
         void BindDepthTexture(uint32_t unit) const { GPUTexture::Bind(m_depthAttachment, unit, TextureType::Texture2D); }
 
         uint32_t GetId() const noexcept     { return m_id; }
@@ -144,6 +144,6 @@ namespace lux
         std::vector<uint32_t> m_colorAttachments;
 
         Scope<IFrameBuffer> m_frameBuffer;
-        Scope<IFrameBuffer> CreateFrameBuffer(const FrameBufferSpecification& specs) noexcept;
+        static Scope<IFrameBuffer> CreateFrameBuffer(const FrameBufferSpecification& specs) noexcept;
     };
 }

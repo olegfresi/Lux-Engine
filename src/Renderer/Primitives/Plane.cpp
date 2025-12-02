@@ -37,7 +37,13 @@ namespace lux
         m_modelMatrix = Matrix4f::Translate(m_position) * Matrix4f::Scale(Vector3f{m_size.GetX(), 1.0f, m_size.GetY()});
         m_vbo.SetData(m_vertices, BufferUsage::StaticDraw, m_layoutScope);
         m_ebo.SetData(m_indices, BufferUsage::StaticDraw, m_layoutScope);
-        m_layoutScope->SetupLayout(m_layout);
+
+        m_layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        m_layout.Push<Vector2f>(GPUPrimitiveDataType::FLOAT, false);
+        m_layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        m_layout.Finalize();
+        std::vector<std::pair<const Layout&, const Buffer&>> vec{{m_layout, m_vbo}};
+        m_layoutScope->SetupLayout(vec);
     }
 
     void Plane::Draw(const Matrix4f& view, const Matrix4f& projection)
@@ -46,6 +52,7 @@ namespace lux
         m_shader->SetUniform("model", m_modelMatrix);
         m_shader->SetUniform("view", view);
         m_shader->SetUniform("projection", projection);
+        m_shader->SetUniform("useInstancing", false);
         MeshRenderer::Draw(GPUDrawPrimitive::TRIANGLES, GPUPrimitiveDataType::UNSIGNED_INT, m_ebo.GetSize(), m_layoutScope);
     }
 }

@@ -1,19 +1,19 @@
 #include "../../include/Renderer/Mesh/Mesh.hpp"
 #include "../../include/OpenGL/MeshRenderer.hpp"
 
+
 namespace lux
 {
-    Mesh::Mesh(const MeshType type, NonOwnPtr<Shader> shader) : m_type{type}, m_layout{CreateVertexLayout()}, m_shader{shader}, m_materials{} {}
-    Mesh::Mesh(const MeshType type, NonOwnPtr<Shader> shader, TextureSpecification textureSpecs) : Mesh{type, shader}
+    Mesh::Mesh(const MeshType type, NonOwnPtr<Shader> shader) : m_type{type}, m_layout{CreateVertexLayout()}, m_shader{shader} {}
+    Mesh::Mesh(const MeshType type, NonOwnPtr<Shader> shader, const TextureSpecification& textureSpecs) : Mesh{type, shader}
     {
         Texture2D tex{textureSpecs};
         m_samplerName = textureSpecs.samplerName;
         m_texture = std::move(tex);
     }
 
-    Mesh::Mesh(const Mesh& other) : m_shader{other.m_shader}, m_type{other.m_type}, m_meshData{other.m_meshData},
-                              m_ebo{other.m_ebo}, m_vbo{other.m_vbo}, m_layout{other.m_layout->Clone()} {}
-
+    Mesh::Mesh(const Mesh& other) : m_type{other.m_type}, m_meshData{other.m_meshData}, m_vbo{other.m_vbo},
+            m_ebo{other.m_ebo}, m_layout{other.m_layout->Clone()}, m_shader{other.m_shader} {}
     Mesh& Mesh::operator=(const Mesh& other)
     {
         if (this != &other)
@@ -29,19 +29,47 @@ namespace lux
 
     void Mesh::SetupMesh() noexcept
     {
-        m_vbo.SetData( m_meshData.vertices, BufferUsage::StaticDraw, m_layout);
-        m_ebo.SetData( m_meshData.indices, BufferUsage::StaticDraw, m_layout);
-        m_layout->SetupLayout(m_meshData.layout);
+        Layout layout;
+        layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        layout.Push<Vector2f>(GPUPrimitiveDataType::FLOAT, false);
+        layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        layout.Finalize();
+
+        Layout instanceLayout;
+        instanceLayout.index = 3;
+        instanceLayout.Push<Vector4f>(GPUPrimitiveDataType::FLOAT, true);
+        instanceLayout.Push<Vector4f>(GPUPrimitiveDataType::FLOAT, true);
+        instanceLayout.Push<Vector4f>(GPUPrimitiveDataType::FLOAT, true);
+        instanceLayout.Push<Vector4f>(GPUPrimitiveDataType::FLOAT, true);
+        instanceLayout.Finalize();
+
+        auto matrixData = MatricesAsFloatVector(m_instanceMatrices);
+
+        m_vbo.SetData(m_meshData.vertices, BufferUsage::StaticDraw, m_layout);
+        m_ebo.SetData(m_meshData.indices, BufferUsage::StaticDraw, m_layout);
+        m_instanceVBO.SetData(matrixData, BufferUsage::StaticDraw, m_layout);
+
+        m_layout->SetupLayout({{layout, m_vbo}, {instanceLayout, m_instanceVBO}});
     }
 
 
-    void Mesh::Draw(GPUDrawPrimitive primitive, GPUPrimitiveDataType type) const noexcept
+    void Mesh::Draw(GPUDrawPrimitive primitive, GPUPrimitiveDataType type, uint32_t instances, bool instanced) const noexcept
     {
-        //m_shader->Bind();
-
+        m_shader->Bind();
         //m_shader->SetUniform(m_samplerName, m_texture.GetTextureUnit());
         //m_texture.Draw(m_texture.GetTextureUnit());
-        MeshRenderer::Draw(primitive, type, m_ebo.GetSize(), m_layout);
+        uint32_t indexCount = static_cast<uint32_t>(m_meshData.indices.size());
+        if (instanced)
+        {
+            m_shader->SetUniform("useInstancing", true);
+            MeshRenderer::DrawInstanced(primitive, type, indexCount, m_layout, instances);
+        }
+        else
+        {
+            m_shader->SetUniform("useInstancing", false);
+            MeshRenderer::Draw(primitive, type, indexCount, m_layout);
+        }
+
         //m_shader->Unbind();
     }
 }

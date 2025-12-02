@@ -131,7 +131,8 @@ namespace lux
         }
 
         m_elementCount = m_indices.size();
-        return MeshData{ m_indices, m_vertices, Layout::Create<Vector3f, Vector2f, Vector3f>() };
+        Layout layout;
+        return MeshData{ m_indices, m_vertices, layout };
     }
 
     std::unordered_map<std::string, Material> MaterialParser::ParseMaterial(const std::filesystem::path& filePath)

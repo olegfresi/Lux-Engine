@@ -37,7 +37,14 @@
 
 namespace lux
 {
+    struct NewMeshInstance;
     class GameObject;
+
+    struct SceneObject
+    {
+        NonOwnPtr<Mesh> mesh;
+        Transform transform;
+    };
 
     class Scene
     {
@@ -45,16 +52,16 @@ namespace lux
         explicit Scene(const std::string& name);
         Scene(const std::string& name, NonOwnPtr<Camera> camera);
 
-        void LoadScene() noexcept;
-        void UnloadScene() noexcept;
-        void Terminate() noexcept;
-        void Update() noexcept;
+        void LoadScene() noexcept {}
+        void UnloadScene() noexcept {}
+        void Terminate() noexcept {}
+        void Update() noexcept {}
 
-        void SaveToFile(const std::string& filePath) noexcept;
-        void LoadFromFile(const std::string& filePath) noexcept;
+        void SaveToFile(const std::string& filePath) noexcept {}
+        void LoadFromFile(const std::string& filePath) noexcept {}
 
-        void AddGameObject(const Ref<GameObject>& gameObject) noexcept;
-        void RemoveGameObject(const Ref<GameObject>& gameObject) noexcept;
+        void AddGameObject(const Ref<GameObject>& gameObject) noexcept {}
+        void RemoveGameObject(const Ref<GameObject>& gameObject) noexcept {}
         void SetCamera(NonOwnPtr<Camera> camera) noexcept;
 
         void AddMesh(const Ref<Mesh>& mesh) noexcept;
@@ -64,12 +71,15 @@ namespace lux
         void AddPrimitive(const Ref<IPrimitive>& primitive) noexcept;
         void RemovePrimitive(const Ref<IPrimitive>& primitive) noexcept;
 
-        void AddLight(const Light& light) noexcept;
-        void RemoveLight(const Light& light) noexcept;
+        void AddLight(const Light& light) noexcept {}
+        void RemoveLight(const Light& light) noexcept {}
 
-        std::vector<Ref<Mesh>> GetMeshes() const noexcept { return m_meshes; }
-        std::vector<Ref<IPrimitive>> GetPrimitives() const noexcept { return m_primitives; }
-        std::vector<Light> GetLights() const noexcept { return m_lights; }
+        static std::unordered_map<NonOwnPtr<Mesh>, std::vector<Transform>, MeshPtrHash, MeshPtrEq>
+            GroupMeshInstances(const std::vector<SceneObject>& objects);
+
+        const std::vector<Ref<Mesh>>& GetMeshes() const noexcept { return m_meshes; }
+        const std::vector<Ref<IPrimitive>>& GetPrimitives() const noexcept { return m_primitives; }
+        const std::vector<Light>& GetLights() const noexcept { return m_lights; }
 
         const Camera& GetCamera() const noexcept { return *m_camera; }
 

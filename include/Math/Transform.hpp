@@ -39,5 +39,7 @@ namespace lux::math
         Matrix4f scale;
         Matrix4f rotation;
         Matrix4f translation;
+
+        Matrix4f ToMatrix4() { return translation * rotation * scale; }
     };
 }

@@ -53,4 +53,24 @@ namespace lux::math
     inline const Matrix3d Identity3d = Matrix3d::Identity();
 
     inline const Matrix4d Identity4d = Matrix4d::Identity();
+
+    static constexpr std::vector<float> MatricesAsFloatVector(const std::vector<Matrix4f>& matrices)
+    {
+        std::vector<float> matrixData;
+        matrixData.reserve(matrices.size() * 16);
+        for (size_t i = 0; i < matrices.size(); ++i)
+        {
+            const auto& matrix = matrices[i];
+            for (int col = 0; col < 4; ++col)
+            {
+                const auto& column = matrix.GetCol(col);
+                matrixData.push_back(column.GetX());
+                matrixData.push_back(column.GetY());
+                matrixData.push_back(column.GetZ());
+                matrixData.push_back(column.GetW());
+            }
+        }
+
+        return matrixData;
+    }
 }

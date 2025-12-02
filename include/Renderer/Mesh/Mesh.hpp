@@ -35,6 +35,7 @@
 #include "../Buffer/Buffer.hpp"
 #include "MeshParsers/ObjParser.hpp"
 #include "../../OpenGL/MeshRenderer.hpp"
+#include "../../Math/Transform.hpp"
 
 namespace lux
 {
@@ -50,7 +51,7 @@ namespace lux
     {
     public:
         Mesh(const MeshType type, NonOwnPtr<Shader> shader);
-        Mesh(const MeshType type, NonOwnPtr<Shader> shader, TextureSpecification textureSpecs);
+        Mesh(const MeshType type, NonOwnPtr<Shader> shader, const TextureSpecification& textureSpecs);
         Mesh(const Mesh& other);
         Mesh& operator=(const Mesh& other);
 
@@ -80,10 +81,18 @@ namespace lux
             }
         }
 
-        void SetupMesh() noexcept;
-        void Draw(GPUDrawPrimitive primitive, GPUPrimitiveDataType type) const noexcept;
+        constexpr bool operator==(const Mesh& m) const noexcept
+        {
+            return this == &m || (m_shader == m.m_shader && m_meshData == m.m_meshData && m_type == m.m_type);
+        }
 
-        std::vector<uint32_t> GetIndices() const noexcept { return m_meshData.indices; }
+        MeshData GetMeshData() const noexcept { return m_meshData; }
+        MeshType GetMeshType() const noexcept { return m_type; }
+
+        void SetInstanceMatrices(const std::vector<Matrix4f>& matrices) noexcept { m_instanceMatrices = matrices; }
+
+        void SetupMesh() noexcept;
+        void Draw(GPUDrawPrimitive primitive, GPUPrimitiveDataType type, uint32_t instances = 0, bool instanced = false) const noexcept;
 
         NonOwnPtr<Shader> GetShader() const noexcept { return m_shader; }
         void SetShader(NonOwnPtr<Shader> shader) { m_shader = shader; }
@@ -91,15 +100,75 @@ namespace lux
         Material m_material;
         std::unordered_map<std::string, Material> m_materials;
         std::vector<Texture2D> m_materialTextures;
+        Transform m_modelMatrix;
 
     private:
         MeshType m_type;
         MeshData m_meshData;
         Buffer m_vbo{BufferType::VertexBuffer};
         Buffer m_ebo{BufferType::IndexBuffer};
+        Buffer m_instanceVBO{BufferType::VertexBuffer};
         Scope<IVertexLayout> m_layout;
-        Texture2D m_texture;
+        Texture2D m_texture{};
+        std::vector<Matrix4f> m_instanceMatrices;
         std::string m_samplerName{};
         NonOwnPtr<Shader> m_shader;
+    };
+
+    struct MeshInstance
+    {
+        Ref<Mesh> mesh;
+        std::vector<Transform> transforms;
+    };
+
+    static void HashCombine(std::size_t& seed, std::size_t h)
+    {
+        seed ^= h + 0x9e3779b97f4a7c15ULL + (seed << 6) + (seed >> 2);
+    }
+
+    struct MeshDataHash
+    {
+        std::size_t operator()(const MeshData& data) const noexcept
+        {
+            std::size_t h = 0;
+
+            for (uint32_t i : data.indices)
+                HashCombine(h, std::hash<uint32_t>()(i));
+
+            for (uint32_t i : data.vertices)
+                HashCombine(h, std::hash<uint32_t>()(i));
+
+            return h;
+        }
+    };
+
+    struct MeshHash
+    {
+        std::size_t operator()(const Mesh& m) const noexcept
+        {
+            std::size_t seed = 0;
+            HashCombine(seed, std::hash<int>()(static_cast<int>(m.GetMeshType())));
+
+            MeshDataHash meshDataHash;
+            HashCombine(seed, meshDataHash(m.GetMeshData()));
+
+            return seed;
+        }
+    };
+
+    struct MeshPtrHash
+    {
+        size_t operator()(const NonOwnPtr<Mesh>& ptr) const noexcept
+        {
+            return std::hash<Mesh*>()(ptr);
+        }
+    };
+
+    struct MeshPtrEq
+    {
+        bool operator()(const NonOwnPtr<Mesh>& a, const NonOwnPtr<Mesh>& b) const noexcept
+        {
+            return a == b;
+        }
     };
 }

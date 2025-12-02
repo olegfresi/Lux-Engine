@@ -66,7 +66,7 @@ namespace lux
 
         std::vector<float> m_vertices;
         std::vector<uint32_t > m_indices;
-        Layout m_layout = Layout::Create<Vector3f, Vector2f, Vector3f>();
+        Layout m_layout; // = Layout::Create<Vector3f, Vector2f, Vector3f>();
         Scope<IVertexLayout> m_layoutScope;
 
         Vector3f m_position;

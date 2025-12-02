@@ -2,8 +2,7 @@
 - Write documentation
 - Write C++ coding standard 
 - Fix todos in code
-- Fix from cmake setting up working directory
-- Fix setup scripts
+- Fix setup scripts 
 - Implement reflection
 - Finish memory system
 - Implement GUI system
@@ -11,10 +10,12 @@
 - Implement material system based on json
 - Implement shader automatic binding to properties such meshes and materials
 - Implement shader validation
-- Implement instancing
+- Implement instancing   ✅
 - Implement batched rendering
 - Implement frustum culling
 - Implement forward rendering
 - Implement deferred rendering
 - Implement tagged pointers and morton codes
 - Make precompiled header file
+- Implement simd matrix operations
+- Implement at least 3 mesh parsers

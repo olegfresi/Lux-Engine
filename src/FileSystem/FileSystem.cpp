@@ -26,7 +26,7 @@ std::string FileSystem::ToLower(const std::string& s)
     return result;
 }
 
-std::vector<std::string> FileSystem::Split(std::string& line, const std::string& delim)
+std::vector<std::string> FileSystem::Split(std::string line, const std::string& delim)
 {
     std::vector<std::string> tokens;
     size_t pos = 0;

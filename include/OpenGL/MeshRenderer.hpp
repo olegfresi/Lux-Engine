@@ -33,6 +33,7 @@
 #include "GLFW/glfw3.h"
 #include "../Renderer/Common/GPU.hpp"
 #include "OpenGLBuffer.hpp"
+#include <iostream>
 
 namespace lux
 {
@@ -47,15 +48,6 @@ namespace lux
                     GLCheck(glDrawElements(static_cast<GLenum >(primitive), size, static_cast<GLenum>(type), nullptr));
                     l->Unbind();
                     break;
-                case GraphicsAPI::VULKAN:
-                    // Vulkan draw call
-                    break;
-                case GraphicsAPI::DIRECTX:
-                    // DirectX draw call
-                    break;
-                case GraphicsAPI::METAL:
-                    // Metal draw call
-                    break;
             }
         }
 
@@ -64,18 +56,10 @@ namespace lux
             switch(API)
             {
                 case GraphicsAPI::OPENGL:
+                    assert(instances > 0);
                     l->Bind();
                     GLCheck(glDrawElementsInstanced(static_cast<GLenum >(primitive), size, static_cast<GLenum>(type), nullptr, instances));
                     l->Unbind();
-                    break;
-                case GraphicsAPI::VULKAN:
-                    // Vulkan draw call
-                    break;
-                case GraphicsAPI::DIRECTX:
-                    // DirectX draw call
-                    break;
-                case GraphicsAPI::METAL:
-                    // Metal draw call
                     break;
             }
         }

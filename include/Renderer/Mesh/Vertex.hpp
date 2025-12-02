@@ -44,6 +44,7 @@ namespace lux
         bool normalized;
         int stride;
         const void* pointer;
+        uint32_t divisor = 0;
     };
 
     /*

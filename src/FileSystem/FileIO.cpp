@@ -2,7 +2,7 @@
 
 namespace lux::filesys
 {
-    FileReader::FileReader(const std::string& filePath) : filePath_(filePath)
+    FileReader::FileReader(const std::string& filePath) : m_filePath(filePath)
     {
         OpenFile();
     }
@@ -16,18 +16,18 @@ namespace lux::filesys
 
     bool FileReader::IsOpen() const
     {
-        return file_.is_open();
+        return m_file.is_open();
     }
 
     std::string FileReader::FindLineContaining(const std::string& keyword)
     {
-        if (!file_.is_open())
+        if (!m_file.is_open())
             return "";
 
         std::string line;
-        file_.seekg(0);
+        m_file.seekg(0);
 
-        while (std::getline(file_, line))
+        while (std::getline(m_file, line))
         {
             if (line.find(keyword) != std::string::npos)
                 return line;
@@ -38,13 +38,13 @@ namespace lux::filesys
 
     std::string FileReader::GetValueForKey(const std::string& key, char separator)
     {
-        if (!file_.is_open())
+        if (!m_file.is_open())
             return "";
 
         std::string line;
-        file_.seekg(0);
+        m_file.seekg(0);
 
-        while (std::getline(file_, line))
+        while (std::getline(m_file, line))
         {
             size_t pos = line.find(separator);
             if (pos != std::string::npos)
@@ -61,13 +61,13 @@ namespace lux::filesys
     std::unordered_map<std::string, std::string> FileReader::ReadAsKeyValue(char separator)
     {
         std::unordered_map<std::string, std::string> data;
-        if (!file_.is_open())
+        if (!m_file.is_open())
             return data;
 
         std::string line;
-        file_.seekg(0);
+        m_file.seekg(0);
 
-        while (std::getline(file_, line))
+        while (std::getline(m_file, line))
         {
             size_t pos = line.find(separator);
             if (pos != std::string::npos)
@@ -85,13 +85,13 @@ namespace lux::filesys
 
     void FileReader::Close()
     {
-        if (file_.is_open())
-            file_.close();
+        if (m_file.is_open())
+            m_file.close();
     }
 
     bool FileReader::GetLine(std::string &line)
     {
-        if (std::getline(file_, line))
+        if (std::getline(m_file, line))
             return true;
 
         return false;
@@ -99,15 +99,15 @@ namespace lux::filesys
 
     bool FileReader::HasNextLine() const
     {
-        return !file_.eof();
+        return !m_file.eof();
     }
 
     std::string FileReader::GetNextLine()
     {
         std::string line;
-        if (std::getline(file_, line))
+        if (std::getline(m_file, line))
         {
-            ++currentLine;
+            ++m_currentLine;
             return line;
         }
 
@@ -116,12 +116,12 @@ namespace lux::filesys
 
     void FileReader::Reset()
     {
-        file_.clear();
-        file_.seekg(0, std::ios::beg);
-        currentLine = 0;
+        m_file.clear();
+        m_file.seekg(0, std::ios::beg);
+        m_currentLine = 0;
     }
 
-    size_t FileReader::GetCurrentLine() const { return currentLine; }
+    size_t FileReader::GetCurrentLine() const { return m_currentLine; }
 
     std::vector<std::string> FileReader::SplitLine(const std::string& line, const std::string& delimiter) const
     {
@@ -142,10 +142,10 @@ namespace lux::filesys
 
     void FileReader::OpenFile()
     {
-        file_.open(filePath_);
-        if (!file_)
+        m_file.open(m_filePath);
+        if (!m_file)
         {
-            CORE_CRITICAL( "Failed opening file '{}'", filePath_ );
+            CORE_CRITICAL( "Failed opening file '{}'", m_filePath );
             throw std::runtime_error("Failed opening file");
         }
     }

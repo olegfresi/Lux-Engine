@@ -58,9 +58,9 @@ namespace lux::filesys
         size_t GetCurrentLine() const;
 
     private:
-        std::string filePath_;
-        std::ifstream file_;
-        size_t currentLine;
+        std::string m_filePath;
+        std::ifstream m_file;
+        size_t m_currentLine;
 
         void OpenFile();
         static std::string Trim(const std::string& str);

@@ -47,6 +47,7 @@ namespace lux
         [[nodiscard]] bool IsBound() const noexcept override;
         void SetUniform1f(const std::string& name, float value) noexcept override;
         void SetUniform1i(const std::string& name, int value) noexcept override;
+        void SetUniform1b(const std::string& name, bool value) noexcept override;
 
         void SetUniform2i(const std::string& name, int v0, int v1) noexcept override;
         void SetUniform2f(const std::string& name, float v0, float v1) noexcept override;

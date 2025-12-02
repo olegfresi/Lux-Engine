@@ -96,7 +96,6 @@ add_subdirectory(thirdparty/spirv-tools)
 add_subdirectory(thirdparty/glslang)
 add_subdirectory(thirdparty/spdlog)
 add_subdirectory(thirdparty/glfw)
-#add_subdirectory(thirdparty/glm)
 
 
 # Check useful also for multi-config generators
@@ -127,7 +126,8 @@ endif()
 # Main target
 add_executable(LuxEngine ${SOURCE_FILES} ${HEADER_FILES})
 
-add_library(glew STATIC thirdparty/glew/src/glew.c)
+add_library(glew STATIC thirdparty/glew/src/glew.c
+)
 
 target_include_directories(glew PUBLIC
     ${CMAKE_SOURCE_DIR}/thirdparty/glew/include
@@ -137,12 +137,11 @@ target_compile_definitions(glew PUBLIC GLEW_STATIC)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/thirdparty
-        ${CMAKE_SOURCE_DIR}/thirdparty/spirv-tools/include
-        ${CMAKE_SOURCE_DIR}/thirdparty/spirv-tools/external/spirv-headers/include
+    ${CMAKE_SOURCE_DIR}/thirdparty/spirv-tools/include
+    ${CMAKE_SOURCE_DIR}/thirdparty/spirv-tools/external/spirv-headers/include
     ${CMAKE_SOURCE_DIR}/thirdparty/glslang
     ${CMAKE_SOURCE_DIR}/thirdparty/spdlog/include
     ${CMAKE_SOURCE_DIR}/thirdparty/glew/include)
-    #${CMAKE_SOURCE_DIR}/thirdparty/glm)
 
 if(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE

@@ -11,15 +11,10 @@ namespace lux
         {
             case GraphicsAPI::OPENGL:
                 return CreateScope<OpenGLFrameBuffer>(specs);
-            case GraphicsAPI::VULKAN:
-                break;
-            case GraphicsAPI::DIRECTX:
-                break;
-            case GraphicsAPI::METAL:
-                break;
-        }
 
-        return nullptr;
+            default:
+                assert(false);
+        }
     }
 
 

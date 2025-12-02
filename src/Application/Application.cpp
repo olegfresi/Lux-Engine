@@ -105,20 +105,21 @@ namespace lux
         ShaderCompiler::Initialize();
     }
 
-    void Render(const Scene& scene)
+    void Render(const Scene& scene, const Matrix4f& lightSpaceMatrix, Shader& depthShader, const FrameBufferSpecification& fbSpecs)
     {
-        RenderCommand::EnableDepthWrite(true);
-        RenderCommand::EnableDepthTest(true, DepthTestFunction::LESS);
-        RenderCommand::EnableFaceCulling(true, GPUCullFaceType::BACK, GPUCullFaceOrder::COUNTER_CLOCKWISE);
+        // Already in shadowPass.Begin
+        // RenderCommand::EnableDepthWrite(true);
+        // RenderCommand::EnableDepthTest(true, DepthTestFunction::LESS);
+        // RenderCommand::EnableFaceCulling(true, GPUCullFaceType::BACK, GPUCullFaceOrder::COUNTER_CLOCKWISE);
 
-        //ShadowPass shadowPass{};
-        //shadowPass.Begin(scene.GetMeshes());
+        ShadowPass shadowPass{depthShader, fbSpecs};
+        shadowPass.Begin(scene, lightSpaceMatrix, Identity4f);
 
         for (const auto& mesh : scene.GetMeshes())
         {
             mesh->SetupMesh();
             mesh->GetShader()->Bind();
-            auto m = math::Matrix4f::Scale(math::Vector3f(0.3f, 0.3f, 0.3f));
+            auto m = math::Matrix4f::Scale(Vector3f(0.3f, 0.3f, 0.3f));
             mesh->GetShader()->SetUniform("model", m);
             mesh->GetShader()->SetUniform("view", scene.GetCamera().GetView());
             mesh->GetShader()->SetUniform("projection", scene.GetCamera().GetProjection());
@@ -178,12 +179,6 @@ namespace lux
         Scene scene{"Main scene", &m_camera};
         FPSCounter counter;
 
-        Shader objShader("assets/Shaders/vertex_shader2.vert", "assets/Shaders/fragment_shader2.frag");
-        Shader lightShader("assets/Shaders/lightVShader.vert", "assets/Shaders/lightFShader.frag");
-        Shader cubeShader("assets/Shaders/primitive.vert", "assets/Shaders/primitive.frag");
-        Shader skyBoxShader("assets/Shaders/skybox.vert", "assets/Shaders/skybox.frag");
-        SkyBox skybox(faces, &skyBoxShader, Vector3f(100.0f, 100.0f, 100.0f), "skybox");
-
         /*
         Ref<Mesh> objMesh = CreateRef<Mesh>(MeshType::STATIC, objShader, specs);
         objMesh->LoadMeshFromFile("assets/castle.obj", "assets/castle.mtl");
@@ -212,15 +207,20 @@ namespace lux
         Shader depthShader("assets/Shaders/depth.vert", "assets/Shaders/depth.frag");
         Shader frustumShader("assets/Shaders/frustum.vert", "assets/Shaders/frustum.frag");
         Shader primitiveShader("assets/Shaders/primitive.vert", "assets/Shaders/primitive.frag");
+        Shader objShader("assets/Shaders/vertex_shader2.vert", "assets/Shaders/fragment_shader2.frag");
+        Shader lightShader("assets/Shaders/lightVShader.vert", "assets/Shaders/lightFShader.frag");
+        Shader cubeShader("assets/Shaders/primitive.vert", "assets/Shaders/primitive.frag");
+        Shader skyBoxShader("assets/Shaders/skybox.vert", "assets/Shaders/skybox.frag");
+        SkyBox skybox(faces, &skyBoxShader, Vector3f(100.0f, 100.0f, 100.0f), "skybox");
 
         Texture2D diffuseTexture{specs};
         Texture2D woodTexture{specs2};
 
-        Ref<Mesh> objMesh = CreateRef<Mesh>(MeshType::STATIC, &depthShader, specs);
+        Ref<Mesh> objMesh = CreateRef<Mesh>(MeshType::STATIC, &shadowShader, specs);
         objMesh->LoadMeshFromFile("assets/castle.obj", "assets/castle.mtl");
         scene.AddMesh(objMesh);
 
-        Ref<Plane> plane = CreateRef<Plane>(&depthShader, Vector3f(0.4f, -1.0f, 0.3f), Vector2f(20.0f, 20.0f));
+        Ref<Plane> plane = CreateRef<Plane>(&cubeShader, Vector3f(0.4f, -1.0f, 0.3f), Vector2f(20.0f, 20.0f));
 
         FrameBufferSpecification fbSpec;
         fbSpec.width = 2048;
@@ -232,11 +232,10 @@ namespace lux
         Vector3f lightPos = Vector3f(-3.5f, 4.0f, 2.5f);
         Vector3f lightDirection = (Vector3f(0, 0, 0) - lightPos);
         lightDirection.Normalize();
-        auto lightTarget = Vector3f (0.0f, 0.0f, 0.0f);
+        Vector3f lightTarget;
         Matrix4f lightProjection = Matrix4f::Orthographic(-frustumSize, frustumSize, -frustumSize, frustumSize, 1.0f, 10.0f);
-        Matrix4f lightView = Matrix4f::LookAt(lightPos, lightTarget, Vector3f (0, 1, 0));
+        //Matrix4f lightView = Matrix4f::LookAt(lightPos, lightTarget, Vector3f (0, 1, 0));
         Matrix4f lightSpaceMatrix{};
-
 
         std::string shaderSource = ReadShaderFile("assets/Shaders/vertex_shader2.vert");
         glslang::TProgram program;
@@ -254,9 +253,31 @@ namespace lux
 
         PrintShaderReflection(visitor.data);
 
-
-        objMesh->SetupMesh();
         //SetupFrustumBuffers();
+
+        constexpr int n = 5;
+        std::vector<Transform> transforms(n);
+        for (int i = 0; i < n; i++)
+            transforms[i] = Transform{Identity4f, Identity4f, Matrix4f::Translate(Vector3f{i * 8.0f, 0.0f, 0.0f})};
+
+        std::vector<SceneObject> objects;
+        for (const auto& mesh : scene.GetMeshes())
+        {
+            int i = 2;
+            objects.push_back({mesh.get(), transforms[i]});
+        }
+
+        std::vector<Matrix4f> matrices(transforms.size());
+        for (size_t i = 0; i < n; i++)
+            matrices[i] = transforms[i].translation;
+
+        auto grouped = scene.GroupMeshInstances(objects);
+
+        for (const auto& [mesh, trans] : grouped)
+        {
+            mesh->SetInstanceMatrices(matrices);
+            mesh->SetupMesh();
+        }
 
         while (!m_window->ShouldClose())
         {
@@ -269,7 +290,6 @@ namespace lux
 
             // float lightX = radius * cosf(orbitSpeed * time * 0.5);
             // float lightZ = radius * sinf(orbitSpeed * time * 0.5);
-
 
             lightTarget = lightPos + lightDirection;
             lightSpaceMatrix = lightProjection * Matrix4f::LookAt(lightPos, lightTarget, Vector3f(0, 1, 0));
@@ -298,7 +318,9 @@ namespace lux
             shadowShader.SetUniform("diffuseTexture", diffuseTexture.GetTextureUnit());
             diffuseTexture.Bind(diffuseTexture.GetTextureUnit());
             objMesh->SetShader(&shadowShader);
-            objMesh->Draw(GPUDrawPrimitive::TRIANGLES, GPUPrimitiveDataType::UNSIGNED_INT);
+            auto instances = static_cast<uint32_t>(transforms.size());
+            for (const auto& mesh : grouped)
+                mesh.first->Draw(GPUDrawPrimitive::TRIANGLES, GPUPrimitiveDataType::UNSIGNED_INT, instances, true);
 
             shadowShader.SetUniform("diffuseTexture", woodTexture.GetTextureUnit());
             woodTexture.Bind(woodTexture.GetTextureUnit());
@@ -306,8 +328,8 @@ namespace lux
             plane->SetShader(&shadowShader);
             plane->Draw(m_camera.GetView(), m_camera.GetProjection());
 
-            UpdateFrustumCorners(lightProjection, lightView);
-            DrawFrustum(m_camera.GetView(), m_camera.GetProjection(), frustumShader);
+            //UpdateFrustumCorners(lightProjection, lightView);
+            //DrawFrustum(m_camera.GetView(), m_camera.GetProjection(), frustumShader);
 
             m_gamepad->Update(deltaTime);
             std::cout << counter.GetFPS() << std::endl;

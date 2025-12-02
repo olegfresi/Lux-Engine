@@ -42,6 +42,11 @@ namespace lux
         std::vector<uint32_t> indices;
         std::vector<float> vertices;
         Layout layout;
+
+        bool operator==(const MeshData& m) const
+        {
+            return this == &m || (indices == m.indices && vertices == m.vertices);
+        }
     };
 
 
