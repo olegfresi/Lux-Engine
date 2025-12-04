@@ -31,8 +31,8 @@
 - Git
 
 # Automatic Build Instructions
-The only thing you need to have installed is git, everything else will be configured automatically
-Open your terminal on Linux or MacOS or powershell on Windows then copy and paste the following commands on MacOS or Linux
+## Linux and MacOS
+Open your terminal on Linux or MacOS then copy and paste the following commands
 ```bash 
 cd Desktop &&
 git clone https://github.com/olegfresi/Lux-Engine.git "Lux Engine" --recursive &&
@@ -40,7 +40,8 @@ chmod +x setup.sh &&
 cd Lux\ Engine/scripts &&
 ./setup.sh
 ```
-On Windows open cmd and navigate to the Lux Engine directory and run the following command
+## Windows
+Open cmd or powershell and copy and paste the folllowing
 ```powershell
 cd Desktop &&
 git clone https://github.com/olegfresi/Lux-Engine.git "Lux Engine" --recursive &&
