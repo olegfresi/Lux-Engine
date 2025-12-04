@@ -12,6 +12,7 @@ December goals
 - Finish memory system
 - Implement frustum culling
 - Implement terrain rendering from height maps
+- Add github actions
 
 New year...
 - Fix todos in code

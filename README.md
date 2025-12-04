@@ -3,7 +3,7 @@
 #### Lux Engine is a C++20 graphics engine built to explore modern rendering pipelines with a strong focus on subsystem modularity.
 
 
-## Key Features
+## Key Features 🚀
 - **Configurable Rendering Pipeline**
 - **Instanced Rendering**
 - **Forward and Deferred Rendering Pipeline**
@@ -14,23 +14,22 @@
 - **Test Suite**
 - **Multi-platform support**
 
-## Platforms Supported  
+## Platforms Supported  🖥️
   - **Windows**
   - **macOS**
   - **Linux**
 
-## Rendering API Supported
+## Rendering API Supported 🔑
   - OpenGL 4.1 Core Profile
-## Next to come
- - Metal
 
-## Requirements
+
+## Requirements 📌
 - CMake 3.27 or higher
 - C++20 compiler
 - Python 3.10
 - Git
 
-# Automatic Build Instructions
+# Automatic Build Instructions  🛠️
 The only thing you need to have installed is git, everything else will be configured automatically
 Open your terminal on Linux or MacOS or powershell on Windows then copy and paste the following commands on MacOS or Linux
 ```bash 
@@ -48,9 +47,7 @@ cd Lux\ Engine/scripts &&
 ./windowsSetup.bat
 ```
 
-## Enjoy the engine!
-
-# Manual Build Instructions
+# Manual Build Instructions  🔨
 
 ### Build (macOS & Linux)
 ```bash
@@ -80,22 +77,23 @@ cmake --build build
 ctest --test-dir build
 ```
 
-## Setup Scripts
+## Setup Scripts  ⚙️
 - `scripts/setup.sh` – automatic MacOS/Linux setup <br><br>
 - `scripts/windowsSetup.bat` – automatic windows setup <br><br>
 - `scripts/setup.py` – Python setup script <br><br>
 
-## Assets
+## Assets  🧰
 3D assets,shaders, materials and textures are stored in `assets/` and can be replaced with your own.
 
-## Known Issues
+## Known Issues  ⚠️
 - Feel free to write there! 
 
-## Contributing
+## Contributing 💪
 You MUST read Coding Conventions established for this C++ project
 <a href="/Coding Conventions.html" target="_blank"> Coding Conventions </a>
-Try to be consistent along your work
+
+Be consistent along your work
 
 
-## License
+## License 📜
 The project is distributed under the terms described in `LICENSE.md`.
