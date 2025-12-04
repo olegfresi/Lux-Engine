@@ -17,6 +17,65 @@ check_and_install_python() {
     fi
 }
 
+echo "🔍 Checking if Git is installed..."
+
+if command -v git >/dev/null 2>&1; then
+    echo "✅ Git is already installed:"
+    git --version
+    exit 0
+fi
+
+echo "❌ Git not found. Installing..."
+
+# =========================
+# macOS
+# =========================
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "🍏 macOS detected"
+
+    if command -v brew >/dev/null 2>&1; then
+        echo "✅ Homebrew found → Installing Git..."
+        brew install git
+    else
+        echo "❌ Homebrew not found!"
+        echo "➡️ Installing Homebrew first..."
+
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        echo "✅ Homebrew installed. Installing Git..."
+        brew install git
+    fi
+
+# =========================
+# Linux
+# =========================
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    echo "🐧 Linux detected"
+
+    if command -v apt >/dev/null 2>&1; then
+        sudo apt update
+        sudo apt install -y git
+
+    elif command -v dnf >/dev/null 2>&1; then
+        sudo dnf install -y git
+
+    elif command -v pacman >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm git
+
+    else
+        echo "❌ Unsupported Linux distribution!"
+        exit 1
+    fi
+
+else
+    echo "❌ Unsupported OS!"
+    exit 1
+fi
+
+echo "✅ Git installation completed!"
+git --version
+
+
 # macOS: Check and install Homebrew
 if [ "$OS" == "Darwin" ]; then
     if ! command -v brew &> /dev/null; then

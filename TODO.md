@@ -1,21 +1,24 @@
-- Write better README
+December goals
+- Implement instancing   ✅
+- Write better README    ✅
 - Write documentation
-- Write C++ coding standard 
-- Fix todos in code
-- Fix setup scripts 
-- Implement reflection
+- Write C++ coding standard ✅
+- Fix setup scripts      ✅
+- Make precompiled header file
+- Implement GUI system 
+- Implement shader system
+- Implement shader automatic binding to properties such meshes and materials
+- Implement tagged pointers and morton codes
 - Finish memory system
-- Implement GUI system
+- Implement frustum culling
+- Implement terrain rendering from height maps
+
+New year...
+- Fix todos in code
+- Implement reflection
 - Change mesh representation using vertex struct and naming attributes
 - Implement material system based on json
-- Implement shader automatic binding to properties such meshes and materials
-- Implement shader validation
-- Implement instancing   ✅
-- Implement batched rendering
-- Implement frustum culling
 - Implement forward rendering
 - Implement deferred rendering
-- Implement tagged pointers and morton codes
-- Make precompiled header file
 - Implement simd matrix operations
 - Implement at least 3 mesh parsers

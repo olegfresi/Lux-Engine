@@ -127,6 +127,7 @@ endif()
 add_executable(LuxEngine ${SOURCE_FILES} ${HEADER_FILES})
 
 add_library(glew STATIC thirdparty/glew/src/glew.c
+        include/Scene/ResourceCache.hpp
 )
 
 target_include_directories(glew PUBLIC

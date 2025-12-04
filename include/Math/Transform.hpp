@@ -36,10 +36,10 @@ namespace lux::math
 {
     struct Transform
     {
+        Matrix4f translation;
         Matrix4f scale;
         Matrix4f rotation;
-        Matrix4f translation;
 
-        Matrix4f ToMatrix4() { return translation * rotation * scale; }
+        Matrix4f ToMatrix4() const { return translation * rotation * scale; }
     };
 }

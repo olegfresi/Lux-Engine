@@ -92,6 +92,7 @@ namespace lux
         void SetInstanceMatrices(const std::vector<Matrix4f>& matrices) noexcept { m_instanceMatrices = matrices; }
 
         void SetupMesh() noexcept;
+        void SetupMeshInstanced(const std::vector<Transform>& instanceMatrices) noexcept;
         void Draw(GPUDrawPrimitive primitive, GPUPrimitiveDataType type, uint32_t instances = 0, bool instanced = false) const noexcept;
 
         NonOwnPtr<Shader> GetShader() const noexcept { return m_shader; }

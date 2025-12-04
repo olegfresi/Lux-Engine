@@ -42,7 +42,7 @@ namespace lux
         for (const auto& mesh : m_meshes)
         {
             mesh->GetShader()->Bind();
-            mesh->GetShader()->SetUniform("model", math::Identity4f);
+            mesh->GetShader()->SetUniform("model", Identity4f);
             mesh->GetShader()->SetUniform("view", m_camera->GetView());
             mesh->GetShader()->SetUniform("projection", m_camera->GetProjection());
             mesh->SetupMesh();

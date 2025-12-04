@@ -145,7 +145,7 @@ namespace lux
         void InitSubSystems();
 
     private:
-        WindowSettings settings {800, 600, "TestProject", false};
+        WindowSettings settings {800, 600, "Lux Engine", false};
 
         NonOwnPtr<EventDispatcher> m_dispatcher;
         ActionMapper m_mapper;

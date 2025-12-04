@@ -52,16 +52,16 @@ namespace lux
         explicit Scene(const std::string& name);
         Scene(const std::string& name, NonOwnPtr<Camera> camera);
 
-        void LoadScene() noexcept {}
-        void UnloadScene() noexcept {}
-        void Terminate() noexcept {}
-        void Update() noexcept {}
+        static void LoadScene() noexcept {}
+        static void UnloadScene() noexcept {}
+        static void Terminate() noexcept {}
+        static void Update() noexcept {}
 
-        void SaveToFile(const std::string& filePath) noexcept {}
-        void LoadFromFile(const std::string& filePath) noexcept {}
+        static void SaveToFile(const std::string& filePath) noexcept {}
+        static void LoadFromFile(const std::string& filePath) noexcept {}
 
-        void AddGameObject(const Ref<GameObject>& gameObject) noexcept {}
-        void RemoveGameObject(const Ref<GameObject>& gameObject) noexcept {}
+        static void AddGameObject(const Ref<GameObject>& gameObject) noexcept {}
+        static void RemoveGameObject(const Ref<GameObject>& gameObject) noexcept {}
         void SetCamera(NonOwnPtr<Camera> camera) noexcept;
 
         void AddMesh(const Ref<Mesh>& mesh) noexcept;
@@ -71,8 +71,8 @@ namespace lux
         void AddPrimitive(const Ref<IPrimitive>& primitive) noexcept;
         void RemovePrimitive(const Ref<IPrimitive>& primitive) noexcept;
 
-        void AddLight(const Light& light) noexcept {}
-        void RemoveLight(const Light& light) noexcept {}
+        static void AddLight(const Light& light) noexcept {}
+        static void RemoveLight(const Light& light) noexcept {}
 
         static std::unordered_map<NonOwnPtr<Mesh>, std::vector<Transform>, MeshPtrHash, MeshPtrEq>
             GroupMeshInstances(const std::vector<SceneObject>& objects);

@@ -1,18 +1,10 @@
 #include "../../include/Application/Application.hpp"
-#include "../../include/Application/EngineSettings.hpp"
 #include "../../include/Renderer/Shader/Shader.hpp"
 #include "../../include/Renderer/Mesh/Mesh.hpp"
 #include "../../include/Renderer/Common/GraphicsContext.hpp"
 #include "../../include/Renderer/Common/RenderCommand.hpp"
 #include "../../include/Renderer/Shader/ShaderCompiler.hpp"
 #include "../../../thirdparty/glslang/glslang/Public/ShaderLang.h"
-#include "../../../thirdparty/glslang/glslang/Public/ResourceLimits.h"
-#include "../../../thirdparty/glslang/glslang/Include/BaseTypes.h"
-#include "../../../thirdparty/glslang/glslang/Include/Types.h"
-#include "../../../thirdparty/glslang/glslang/Include/InitializeGlobals.h"
-#include "../../../thirdparty/glslang/glslang/Include/ShHandle.h"
-#include "../../../thirdparty/glslang/glslang/Include/InfoSink.h"
-#include "../../../thirdparty/glslang/glslang/Include/Common.h"
 #include "../../../thirdparty/glslang/glslang/Include/intermediate.h"
 #include "../../../thirdparty/glslang/glslang/MachineIndependent/ParseHelper.h"
 #include "../../include/Scene/Scene.hpp"
@@ -23,11 +15,19 @@
 #include "../../include/Renderer/RenderPasses/ShadowPass.hpp"
 #include "../../include/Input/Mouse.hpp"
 #include "../../include/Event/Events.hpp"
-#include "../../include/OpenGL/Debug.hpp"
 #include "GLFW/glfw3.h"
 #include <vector>
 #include <string>
 #define GLM_ENABLE_EXPERIMENTAL
+/*
+#include "../../../thirdparty/glslang/glslang/Public/ResourceLimits.h"
+#include "../../../thirdparty/glslang/glslang/Include/BaseTypes.h"
+#include "../../../thirdparty/glslang/glslang/Include/Types.h"
+#include "../../../thirdparty/glslang/glslang/Include/InitializeGlobals.h"
+#include "../../../thirdparty/glslang/glslang/Include/ShHandle.h"
+#include "../../../thirdparty/glslang/glslang/Include/InfoSink.h"
+#include "../../../thirdparty/glslang/glslang/Include/Common.h"
+*/
 
 namespace lux
 {
@@ -119,7 +119,7 @@ namespace lux
         {
             mesh->SetupMesh();
             mesh->GetShader()->Bind();
-            auto m = math::Matrix4f::Scale(Vector3f(0.3f, 0.3f, 0.3f));
+            auto m = Matrix4f::Scale(Vector3f(0.3f, 0.3f, 0.3f));
             mesh->GetShader()->SetUniform("model", m);
             mesh->GetShader()->SetUniform("view", scene.GetCamera().GetView());
             mesh->GetShader()->SetUniform("projection", scene.GetCamera().GetProjection());
@@ -256,28 +256,25 @@ namespace lux
         //SetupFrustumBuffers();
 
         constexpr int n = 5;
-        std::vector<Transform> transforms(n);
-        for (int i = 0; i < n; i++)
-            transforms[i] = Transform{Identity4f, Identity4f, Matrix4f::Translate(Vector3f{i * 8.0f, 0.0f, 0.0f})};
-
         std::vector<SceneObject> objects;
-        for (const auto& mesh : scene.GetMeshes())
-        {
-            int i = 2;
-            objects.push_back({mesh.get(), transforms[i]});
-        }
 
-        std::vector<Matrix4f> matrices(transforms.size());
-        for (size_t i = 0; i < n; i++)
-            matrices[i] = transforms[i].translation;
+        for (const auto& mesh : scene.GetMeshes())
+            for (int i = 0; i < n; ++i)
+                objects.push_back({
+                    mesh.get(),
+                    { Matrix4f::Translate(Vector3f{ i * 8.0f, 0.0f, 0.0f }), Identity4f, Identity4f}
+                });
 
         auto grouped = scene.GroupMeshInstances(objects);
 
-        for (const auto& [mesh, trans] : grouped)
+        for (auto& [meshPtr, transforms] : grouped)
         {
-            mesh->SetInstanceMatrices(matrices);
-            mesh->SetupMesh();
+            if (transforms.size() > 1)
+                meshPtr->SetupMeshInstanced(transforms);
+            else
+                meshPtr->SetupMesh();
         }
+
 
         while (!m_window->ShouldClose())
         {
@@ -318,9 +315,26 @@ namespace lux
             shadowShader.SetUniform("diffuseTexture", diffuseTexture.GetTextureUnit());
             diffuseTexture.Bind(diffuseTexture.GetTextureUnit());
             objMesh->SetShader(&shadowShader);
-            auto instances = static_cast<uint32_t>(transforms.size());
-            for (const auto& mesh : grouped)
-                mesh.first->Draw(GPUDrawPrimitive::TRIANGLES, GPUPrimitiveDataType::UNSIGNED_INT, instances, true);
+
+            for (auto& [meshPtr, transforms] : grouped)
+            {
+                uint32_t instanceCount = static_cast<uint32_t>(transforms.size());
+
+                if (instanceCount > 1)
+                    meshPtr->Draw(
+                        GPUDrawPrimitive::TRIANGLES,
+                        GPUPrimitiveDataType::UNSIGNED_INT,
+                        instanceCount,
+                        true
+                    );
+                else
+                    meshPtr->Draw(
+                        GPUDrawPrimitive::TRIANGLES,
+                        GPUPrimitiveDataType::UNSIGNED_INT,
+                        1,
+                        false
+                    );
+            }
 
             shadowShader.SetUniform("diffuseTexture", woodTexture.GetTextureUnit());
             woodTexture.Bind(woodTexture.GetTextureUnit());
@@ -332,7 +346,6 @@ namespace lux
             //DrawFrustum(m_camera.GetView(), m_camera.GetProjection(), frustumShader);
 
             m_gamepad->Update(deltaTime);
-            std::cout << counter.GetFPS() << std::endl;
             counter.Update();
 
             m_window->GetRenderContext()->SwapBuffers();

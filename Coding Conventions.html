@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lux Engine — C++ Coding Conventions (English)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0f172a; --card:#020617; --primary:#38bdf8; --accent:#22c55e; --text:#e2e8f0; --muted:#94a3b8; --border:#1e293b; --warn:#f59e0b;
+      --max-width:1200px; --sidebar-width:280px;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100vh;margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans",sans-serif;color:var(--text);background:linear-gradient(180deg,#020617 0%,#0f172a 100%);}
+    body{display:flex;flex-direction:column;}
+    header{padding:3rem 1.25rem;text-align:center;border-bottom:1px solid var(--border);position:relative;}
+    header h1{margin:0;font-size:2.25rem;color:var(--primary)}
+    header p{margin-top:.5rem;color:var(--muted);max-width:900px;margin-left:auto;margin-right:auto}
+    .pdf-btn{position:absolute;top:1rem;right:1rem;background:var(--accent);color:#000;border:none;padding:.75rem 1.5rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:.95rem;transition:all .2s;}
+    .pdf-btn:hover{background:#10b981;transform:translateY(-2px);box-shadow:0 4px 12px rgba(34,197,94,.4);}
+    .container{display:flex;flex:1;max-width:1600px;width:100%;margin:0 auto;}
+    .sidebar{width:var(--sidebar-width);background:var(--card);border-right:1px solid var(--border);padding:1.5rem 1rem;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;}
+    .sidebar h3{color:var(--primary);font-size:1.1rem;margin:0 0 1rem;padding:0 .5rem;}
+    .sidebar nav{display:flex;flex-direction:column;gap:.25rem;}
+    .sidebar a{color:var(--muted);text-decoration:none;padding:.5rem .75rem;border-radius:6px;font-size:.9rem;transition:all .2s;display:block;border-left:3px solid transparent;}
+    .sidebar a:hover{background:var(--border);color:var(--primary);border-left-color:var(--accent);}
+    .sidebar a.active{background:var(--border);color:var(--accent);border-left-color:var(--accent);font-weight:600;}
+    .sidebar-category{color:var(--accent);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:1.5rem 0 .5rem;padding:0 .75rem;}
+    .sidebar-category:first-of-type{margin-top:0;}
+    main{flex:1;max-width:calc(1600px - var(--sidebar-width));margin:0;padding:2rem 1.5rem;overflow-y:auto;}
+    .grid{display:flex;flex-direction:column;gap:1.25rem;}
+    .card{background:linear-gradient(180deg,#020617,#020617);border:1px solid var(--border);padding:1.25rem;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.35);scroll-margin-top:2rem;width:100%;}
+    .card h2{margin:0 0 .6rem;color:var(--accent)}
+    p,li{color:var(--muted);line-height:1.45}
+    ul{padding-left:1rem}
+    code{background:#071024;border:1px solid var(--border);padding:.1rem .3rem;border-radius:6px;font-family:Monaco,Menlo,Consolas,"JetBrains Mono",monospace;color:var(--primary)}
+    pre{background:#071024;border:1px solid var(--border);padding:1rem;border-radius:10px;overflow:auto;color:var(--text)}
+    footer{width:100%;text-align:center;color:var(--muted);padding:2rem 1rem;border-top:1px solid var(--border);background:var(--card);margin-top:auto;}
+    .small{font-size:.95rem;color:var(--muted)}
+    .toggle-sidebar{display:none;position:fixed;top:1rem;left:1rem;background:var(--primary);color:#000;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;z-index:1000;font-weight:600;}
+    
+    @media (max-width: 1024px) {
+      .container{flex-direction:column;}
+      .sidebar{width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid var(--border);}
+      main{max-width:100%;}
+      .pdf-btn{position:relative;top:0;right:0;margin-top:1rem;}
+    }
+    
+    @media print {
+      body{background:#fff !important;color:#000 !important;}
+      .sidebar,.pdf-btn,.toggle-sidebar{display:none !important;}
+      header{border-bottom:2px solid #000;background:#fff !important;padding:2rem 1rem;}
+      header h1{color:#000 !important;}
+      header p{color:#333 !important;}
+      main{max-width:100% !important;padding:1rem !important;margin:0 !important;}
+      .container{display:block !important;}
+      .card{background:#fff !important;border:1px solid #ccc !important;page-break-inside:avoid;box-shadow:none !important;margin-bottom:1rem;}
+      .card h2{color:#000 !important;border-bottom:2px solid #22c55e;padding-bottom:.3rem;}
+      p,li{color:#333 !important;font-size:10pt;}
+      code{background:#f5f5f5 !important;border:1px solid #ddd !important;color:#000 !important;font-size:9pt;}
+      pre{background:#f5f5f5 !important;border:1px solid #ddd !important;color:#000 !important;font-size:9pt;page-break-inside:avoid;}
+      footer{border-top:2px solid #000;color:#000 !important;background:#fff !important;}
+      a{color:#000 !important;text-decoration:none;}
+      .grid{display:block !important;}
+      .card{margin-bottom:1.5rem;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Lux Engine — C++ Coding Conventions</h1>
+  <p>This comprehensive document integrates the Lux Engine coding conventions with the complete Google C++ Style Guide. It covers header files, scoping, classes, C++ features, naming, comments, and formatting. Everything is organized for easy navigation and reference.</p>
+  <button class="pdf-btn" onclick="window.print()">📄 Export PDF</button>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <h3>Navigation</h3>
+    <nav>
+      <div class="sidebar-category">Overview</div>
+      <a href="#overview">Guiding Principles</a>
+      
+      <div class="sidebar-category">Header Files</div>
+      <a href="#header-files">Header Files — General</a>
+      <a href="#header-dependencies">Header Dependencies</a>
+      <a href="#include-order">Include Order</a>
+      <a href="#inline-functions">Inline Functions</a>
+      
+      <div class="sidebar-category">Scoping</div>
+      <a href="#namespaces">Namespaces</a>
+      <a href="#nested-classes">Nested Classes</a>
+      <a href="#nonmember-functions">Nonmember & Global Functions</a>
+      <a href="#local-variables">Local Variables</a>
+      <a href="#static-global-variables">Static & Global Variables</a>
+      
+      <div class="sidebar-category">Classes</div>
+      <a href="#constructors-work">Doing Work in Constructors</a>
+      <a href="#default-constructors">Default Constructors</a>
+      <a href="#explicit-constructors">Explicit Constructors</a>
+      <a href="#copy-constructors">Copy Constructors</a>
+      <a href="#structs-vs-classes">Structs vs. Classes</a>
+      <a href="#inheritance">Inheritance</a>
+      <a href="#multiple-inheritance">Multiple Inheritance</a>
+      <a href="#interfaces">Interfaces</a>
+      <a href="#operator-overloading">Operator Overloading</a>
+      <a href="#access-control">Access Control & Declaration Order</a>
+      <a href="#short-functions">Write Short Functions</a>
+      
+      <div class="sidebar-category">Smart Pointers & Ownership</div>
+      <a href="#smart-pointers">Smart Pointers</a>
+      
+      <div class="sidebar-category">C++ Features</div>
+      <a href="#reference-arguments">Reference Arguments</a>
+      <a href="#function-overloading">Function Overloading</a>
+      <a href="#default-arguments">Default Arguments</a>
+      <a href="#variable-length-arrays">Variable-Length Arrays</a>
+      <a href="#friends">Friends</a>
+      <a href="#exceptions">Exceptions</a>
+      <a href="#rtti">RTTI</a>
+      <a href="#casting">Casting</a>
+      <a href="#streams">Streams</a>
+      <a href="#preincrement">Preincrement & Predecrement</a>
+      <a href="#use-of-const">Use of const</a>
+      <a href="#integer-types">Integer Types</a>
+      <a href="#64bit-portability">64-bit Portability</a>
+      <a href="#preprocessor-macros">Preprocessor Macros</a>
+      <a href="#zero-nullptr">0 and nullptr/NULL</a>
+      <a href="#sizeof">sizeof</a>
+      <a href="#boost">Boost</a>
+      <a href="#modern-cpp">Modern C++</a>
+      
+      <div class="sidebar-category">Naming</div>
+      <a href="#general-naming">General Naming Rules</a>
+      <a href="#file-names">File Names</a>
+      <a href="#type-names">Type Names</a>
+      <a href="#variable-names">Variable Names</a>
+      <a href="#constant-names">Constant Names</a>
+      <a href="#function-names">Function Names</a>
+      <a href="#namespace-names">Namespace Names</a>
+      <a href="#enumerator-names">Enumerator Names</a>
+      <a href="#macro-names">Macro Names</a>
+      <a href="#naming-exceptions">Exceptions to Naming Rules</a>
+      
+      <div class="sidebar-category">Comments</div>
+      <a href="#comment-style">Comment Style</a>
+      <a href="#file-comments">File Comments</a>
+      <a href="#class-comments">Class Comments</a>
+      <a href="#function-comments">Function Comments</a>
+      <a href="#variable-comments">Variable Comments</a>
+      <a href="#implementation-comments">Implementation Comments</a>
+      <a href="#todo-comments">TODO Comments</a>
+      <a href="#deprecation-comments">Deprecation Comments</a>
+      <a href="#punctuation-grammar">Punctuation & Grammar</a>
+      
+      <div class="sidebar-category">Formatting</div>
+      <a href="#line-length">Line Length</a>
+      <a href="#non-ascii">Non-ASCII Characters</a>
+      <a href="#spaces-tabs">Spaces vs. Tabs</a>
+      <a href="#function-declarations">Function Declarations</a>
+      <a href="#function-calls">Function Calls</a>
+      <a href="#conditionals">Conditionals</a>
+      <a href="#loops-switch">Loops & Switch</a>
+      <a href="#pointer-expressions">Pointer & Reference Expressions</a>
+      <a href="#boolean-expressions">Boolean Expressions</a>
+      <a href="#return-values">Return Values</a>
+      <a href="#variable-initialization">Variable Initialization</a>
+      <a href="#preprocessor-directives">Preprocessor Directives</a>
+      <a href="#class-format">Class Format</a>
+      <a href="#constructor-initializers">Constructor Initializer Lists</a>
+      <a href="#namespace-formatting">Namespace Formatting</a>
+      <a href="#horizontal-whitespace">Horizontal Whitespace</a>
+      <a href="#vertical-whitespace">Vertical Whitespace</a>
+      
+      <div class="sidebar-category">Special Topics</div>
+      <a href="#variables-members">Variables — Members & Locals</a>
+      <a href="#function-parameters">Function Parameters & Ordering</a>
+      <a href="#threading-globals">Threading & Globals</a>
+      <a href="#templates-casts">Templates & Advanced Features</a>
+      <a href="#enums-macros">Enums, Macros & Constants</a>
+      
+      <div class="sidebar-category">Exceptions & Examples</div>
+      <a href="#exceptions-rules">Exceptions to the Rules</a>
+      <a href="#windows-code">Windows Code</a>
+      <a href="#example-header">Example — Header</a>
+      <a href="#example-implementation">Example — Implementation</a>
+      <a href="#parting-words">Parting Words</a>
+    </nav>
+  </aside>
+
+<main>
+  <section class="grid">
+
+    <div class="card" id="overview">
+      <h2>Overview — Guiding principles</h2>
+      <ul>
+        <li>Readability first: make code easy to understand before making it compact.</li>
+        <li>Prefer clarity over micro-optimizations.</li>
+        <li>Single responsibility per function/class.</li>
+        <li>Build with warnings enabled and treated as errors where possible.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="header-files">
+      <h2>Header Files — General Rules</h2>
+      <ul>
+        <li>Every <code>.cc</code> file should have an associated <code>.h</code> file (exceptions: unit tests, files with only <code>main()</code>).</li>
+        <li>All header files must have <code>#define</code> guards to prevent multiple inclusion.</li>
+        <li>Format: <code>&lt;PROJECT&gt;_&lt;PATH&gt;_&lt;FILE&gt;_H_</code> based on full path in project source tree.</li>
+        <li>Don't use an <code>#include</code> when a forward declaration would suffice.</li>
+      </ul>
+      <pre><code>// foo/src/bar/baz.h
+#ifndef FOO_BAR_BAZ_H_
+#define FOO_BAR_BAZ_H_
+...
+#endif  // FOO_BAR_BAZ_H_</code></pre>
+    </div>
+
+    <div class="card" id="header-dependencies">
+      <h2>Header File Dependencies</h2>
+      <ul>
+        <li>Minimize includes, especially in header files — prefer forward declarations.</li>
+        <li>You can use <code>Foo*</code> or <code>Foo&amp;</code> with just a forward declaration.</li>
+        <li>You can declare functions with arguments/return values of type <code>Foo</code> without the full definition.</li>
+        <li>You can declare static data members of type <code>Foo</code>.</li>
+        <li>You <strong>must</strong> include the header if you subclass <code>Foo</code> or have a data member of type <code>Foo</code>.</li>
+        <li>Always bring in definitions you use — don't rely on transitive includes.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="include-order">
+      <h2>Include Order</h2>
+      <p>Include order: 1) matching header, 2) C system headers, 3) C++ standard library headers, 4) other libraries' headers, 5) your project's headers. Alphabetize within each group.</p>
+      <pre><code>// Example: in foo.cc
+#include "foo.h"
+
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+#include "thirdparty/lib.h"
+
+#include "lux/core/Camera.h"
+#include "lux/render/Pipeline.h"</code></pre>
+    </div>
+
+    <div class="card" id="inline-functions">
+      <h2>Inline Functions</h2>
+      <ul>
+        <li>Define functions inline only when they are small (10 lines or less).</li>
+        <li>Inlining can generate more efficient code for small functions.</li>
+        <li>Feel free to inline accessors, mutators, and short performance-critical functions.</li>
+        <li>Beware: destructors are often longer than they appear due to implicit destructor calls.</li>
+        <li>Don't inline functions with loops or switch statements (unless rarely executed).</li>
+        <li>Virtual and recursive functions are not normally inlined even if declared as such.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="namespaces">
+      <h2>Namespaces</h2>
+      <ul>
+        <li>All project code must live inside the <code>lux</code> namespace.</li>
+        <li>Use named namespaces in headers; unnamed (anonymous) namespaces in <code>.cc</code> files for internal linkage.</li>
+        <li><strong>Never</strong> use <code>using namespace &lt;...&gt;</code> at global scope (OK in <code>.cc</code> files, functions, or methods).</li>
+        <li>Namespace contents are <strong>not indented</strong>.</li>
+        <li>When declaring nested namespaces, put each on its own line.</li>
+        <li>Close namespace with comment: <code>// namespace lux</code>.</li>
+      </ul>
+      <pre><code>namespace lux {
+
+void Foo() {  // No extra indentation
+  DoSomething();
+}
+
+}  // namespace lux</code></pre>
+    </div>
+
+    <div class="card" id="nested-classes">
+      <h2>Nested Classes</h2>
+      <ul>
+        <li>Nested classes are acceptable when they make sense (e.g., helper classes used only by the outer class).</li>
+        <li>Define nested classes in the same file as the outer class.</li>
+        <li>Only make a nested class public if it's part of the interface.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="nonmember-functions">
+      <h2>Nonmember, Static Member, and Global Functions</h2>
+      <ul>
+        <li>Prefer placing functions in a namespace; avoid polluting the global namespace.</li>
+        <li>Prefer nonmember functions within a namespace or static member functions to global functions.</li>
+        <li>If you must use global functions, consider using a namespace or making them static in a <code>.cc</code> file.</li>
+        <li>Never use <code>using</code>-directives to make symbols from another namespace available.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="local-variables">
+      <h2>Local Variables</h2>
+      <ul>
+        <li>Place function's variables in the narrowest scope possible.</li>
+        <li>Initialize variables in the declaration when practical.</li>
+        <li>Declare variables as close to their first use as possible.</li>
+      </ul>
+      <pre><code>// Good
+int i;
+i = f();
+int j = g(); // Good — declaration and init
+
+// Prefer initializing at declaration
+for (int k = 0; k &lt; 10; ++k) { ... }</code></pre>
+    </div>
+
+    <div class="card" id="static-global-variables">
+      <h2>Static and Global Variables</h2>
+      <ul>
+        <li>Variables of class type with static storage duration are <strong>forbidden</strong> (they cause hard-to-find bugs due to indeterminate initialization order).</li>
+        <li>Objects with static storage duration, including globals, statics, and static class members, must be Plain Old Data (POD): only ints, chars, floats, pointers, or arrays/structs of POD.</li>
+        <li>Static variables of POD type are OK: <code>static const int kNum = 10;</code></li>
+        <li>Use functions returning references for non-POD static data if needed (Construct On First Use idiom).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="constructors-work">
+      <h2>Doing Work in Constructors</h2>
+      <ul>
+        <li>Avoid doing complex initialization in constructors (particularly anything that can fail or requires virtual method calls).</li>
+        <li>If constructors do work, they must succeed — there's no way to signal errors.</li>
+        <li>Consider using <code>Init()</code> methods or factory functions for complex initialization.</li>
+        <li>Avoid calling virtual functions from constructors (they won't dispatch to derived classes).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="default-constructors">
+      <h2>Default Constructors</h2>
+      <ul>
+        <li>Provide a default constructor if your class has member variables and no other constructors.</li>
+        <li>Otherwise, objects won't be usable in arrays or as STL container elements.</li>
+        <li>If all member variables have defaults, the compiler-generated default constructor is sufficient.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="explicit-constructors">
+      <h2>Explicit Constructors</h2>
+      <ul>
+        <li>Use <code>explicit</code> keyword for single-argument constructors.</li>
+        <li>This prevents implicit conversions which can cause subtle bugs.</li>
+        <li>Exception: copy constructors and constructors taking an initializer list.</li>
+      </ul>
+      <pre><code>class Foo {
+public:
+  explicit Foo(int x);  // Good: prevents Foo f = 10;
+  Foo(const Foo&amp;);      // Copy ctor — don't mark explicit
+};</code></pre>
+    </div>
+
+    <div class="card" id="copy-constructors">
+      <h2>Copy Constructors</h2>
+      <ul>
+        <li>Provide a copy constructor and assignment operator if your class has dynamically allocated memory or resources.</li>
+        <li>If copying doesn't make sense, explicitly disable it with <code>= delete</code>.</li>
+        <li>If you don't provide them, the compiler generates defaults (member-wise copy).</li>
+        <li>Remember the Rule of Five: if you define any of copy ctor, copy assignment, move ctor, move assignment, or destructor, consider defining all.</li>
+      </ul>
+      <pre><code>// Disable copying
+class NoCopy {
+public:
+  NoCopy(const NoCopy&amp;) = delete;
+  NoCopy&amp; operator=(const NoCopy&amp;) = delete;
+};</code></pre>
+    </div>
+
+    <div class="card" id="structs-vs-classes">
+      <h2>Structs vs. Classes</h2>
+      <ul>
+        <li>Use <code>struct</code> only for passive objects that carry data; everything else is a <code>class</code>.</li>
+        <li>If more than just data (methods that affect the data), use <code>class</code>.</li>
+        <li>Use <code>struct</code> when all fields are public; use <code>class</code> when you need access control.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="inheritance">
+      <h2>Inheritance</h2>
+      <ul>
+        <li>All inheritance should be <code>public</code>. Non-public inheritance is rarely needed.</li>
+        <li>Use composition when possible instead of implementation inheritance.</li>
+        <li>If using inheritance, make destructors <code>virtual</code>.</li>
+        <li>Limit use of inheritance to "is-a" relationships.</li>
+        <li>Overriding virtual functions: use <code>override</code> or <code>final</code> specifiers.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="multiple-inheritance">
+      <h2>Multiple Inheritance</h2>
+      <ul>
+        <li>Multiple implementation inheritance is <strong>strongly discouraged</strong>.</li>
+        <li>Only acceptable when all superclasses are pure interfaces (all methods are pure virtual).</li>
+        <li>Can lead to diamond problem and code complexity.</li>
+        <li>Exception: platform-specific code may require it (COM, ATL).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="interfaces">
+      <h2>Interfaces</h2>
+      <ul>
+        <li>A class is an interface if it meets: has only pure virtual methods, no data members, no defined constructor, only virtual destructor.</li>
+        <li>Interfaces provide a way to achieve polymorphism without multiple inheritance issues.</li>
+        <li>Name interfaces with an <code>I</code> prefix or <code>Interface</code> suffix (project-dependent).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="operator-overloading">
+      <h2>Operator Overloading</h2>
+      <ul>
+        <li>Don't overload operators except in rare cases where it makes code clearer.</li>
+        <li>Overload operators only if their meaning is obvious and unsurprising (e.g., <code>+</code> for string/number types).</li>
+        <li>Never overload <code>&amp;&amp;</code>, <code>||</code>, <code>,</code> (comma), or unary <code>&amp;</code>.</li>
+        <li>Provide both <code>==</code> and <code>!=</code> if you provide one; same for comparison operators.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="access-control">
+      <h2>Access Control & Declaration Order</h2>
+      <ul>
+        <li>Make data members <code>private</code>; provide accessors if needed.</li>
+        <li>Declaration order: <code>public:</code>, then <code>protected:</code>, then <code>private:</code>.</li>
+        <li>Within each section: typedefs/using, constants, constructors, destructor, methods, data members.</li>
+        <li>Group similar declarations together; separate with blank lines.</li>
+      </ul>
+      <pre><code>class MyClass {
+public:
+  MyClass();
+  ~MyClass();
+  void PublicMethod();
+
+protected:
+  void ProtectedMethod();
+
+private:
+  void PrivateMethod();
+  int m_PrivateData;
+};</code></pre>
+    </div>
+
+    <div class="card" id="short-functions">
+      <h2>Write Short Functions</h2>
+      <ul>
+        <li>Prefer small and focused functions.</li>
+        <li>Long functions are occasionally appropriate — no hard limit.</li>
+        <li>If a function exceeds 40 lines, consider whether it can be broken up.</li>
+        <li>Even if long, functions should be well-structured and easy to understand.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="smart-pointers">
+      <h2>Smart Pointers & Ownership</h2>
+      <ul>
+        <li>Prefer single ownership designs; use <code>std::unique_ptr</code> for ownership and <code>std::shared_ptr</code> only when shared ownership is required.</li>
+        <li>Do not use <code>auto_ptr</code> (deprecated).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="reference-arguments">
+      <h2>Reference Arguments</h2>
+      <ul>
+        <li>All parameters passed by reference must be <code>const</code>: <code>void Func(const MyClass&amp; arg);</code></li>
+        <li>Use pointers for output parameters: <code>void GetValue(int* output);</code></li>
+        <li>This makes it clear at call sites when a value might be modified: <code>GetValue(&amp;x);</code></li>
+        <li>Exception: copy and move constructors/assignment operators.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="function-overloading">
+      <h2>Function Overloading</h2>
+      <ul>
+        <li>Use overloaded functions (including constructors) only if a reader can understand what's happening without seeing the declaration.</li>
+        <li>If overloading would be confusing, use different function names instead.</li>
+        <li>Don't overload just to avoid writing out full function signatures.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="default-arguments">
+      <h2>Default Arguments</h2>
+      <ul>
+        <li>We do not allow default function arguments, except in limited cases.</li>
+        <li>Default arguments can obscure the function interface and make debugging harder.</li>
+        <li>Use function overloading instead when you need multiple variations.</li>
+        <li>Exception: Some cases where default arguments are clearer than overloading.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="variable-length-arrays">
+      <h2>Variable-Length Arrays and alloca()</h2>
+      <ul>
+        <li><strong>Do not use</strong> variable-length arrays or <code>alloca()</code>.</li>
+        <li>They're not part of standard C++ and have portability issues.</li>
+        <li>Use <code>std::vector</code> or heap allocation instead.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="friends">
+      <h2>Friends</h2>
+      <ul>
+        <li>Use <code>friend</code> classes and functions sparingly.</li>
+        <li>Friends should usually be defined in the same file.</li>
+        <li>Acceptable use: making a unit test class a friend.</li>
+        <li>Generally prefer public interfaces over friendship.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="exceptions">
+      <h2>Exceptions</h2>
+      <ul>
+        <li><strong>We do not use C++ exceptions</strong> in Lux Engine core.</li>
+        <li>Pros: clean error handling, RAII works well with exceptions.</li>
+        <li>Cons: adds hidden control flow, binary size increase, can make code harder to understand.</li>
+        <li>Use return codes, asserts in debug builds, and explicit <code>Init()</code>/factory patterns.</li>
+        <li>Exceptions may be allowed in tests or platform-specific code where required.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="rtti">
+      <h2>Run-Time Type Information (RTTI)</h2>
+      <ul>
+        <li>Avoid using RTTI (<code>dynamic_cast</code>, <code>typeid</code>) in production code.</li>
+        <li>RTTI can be useful in unit tests.</li>
+        <li>If you need runtime type info, consider alternative designs (virtual methods, visitor pattern).</li>
+        <li>Query-based designs are often cleaner than type-based dispatch.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="casting">
+      <h2>Casting</h2>
+      <ul>
+        <li>Use C++-style casts: <code>static_cast&lt;T&gt;()</code>, <code>const_cast&lt;T&gt;()</code>, <code>reinterpret_cast&lt;T&gt;()</code>.</li>
+        <li><strong>Never</strong> use C-style casts: <code>(T)value</code> or <code>T(value)</code>.</li>
+        <li>Use <code>static_cast</code> for numeric conversions and upcasting in inheritance hierarchies.</li>
+        <li>Use <code>const_cast</code> to remove <code>const</code> (rarely needed, usually indicates design issue).</li>
+        <li>Use <code>reinterpret_cast</code> for low-level bit reinterpretation (use carefully).</li>
+        <li>Avoid <code>dynamic_cast</code> (requires RTTI, performance cost).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="streams">
+      <h2>Streams</h2>
+      <ul>
+        <li>Use streams only where appropriate (file I/O, string formatting).</li>
+        <li>Do not use streams for output in performance-critical code.</li>
+        <li>Streams can be convenient but have performance and binary size costs.</li>
+        <li>Prefer <code>std::string</code> operations or <code>snprintf</code> when streams aren't needed.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="preincrement">
+      <h2>Preincrement and Predecrement</h2>
+      <ul>
+        <li>Use prefix form (<code>++i</code>) of increment/decrement unless you need postfix.</li>
+        <li>Postfix (<code>i++</code>) creates a temporary copy — unnecessary overhead.</li>
+        <li>For primitive types it doesn't matter, but be consistent.</li>
+        <li>For iterators and user-defined types, prefix is more efficient.</li>
+      </ul>
+      <pre><code>for (int i = 0; i &lt; n; ++i) { ... }  // Prefer this
+for (auto it = vec.begin(); it != vec.end(); ++it) { ... }</code></pre>
+    </div>
+
+    <div class="card" id="use-of-const">
+      <h2>Use of const</h2>
+      <ul>
+        <li>Use <code>const</code> whenever it makes sense: const variables, const pointers, const methods.</li>
+        <li>Const member functions: mark methods that don't modify object state as <code>const</code>.</li>
+        <li>Const parameters: pass by <code>const T&amp;</code> for inputs.</li>
+        <li><code>const</code> helps catch errors at compile time and documents intent.</li>
+        <li>Place <code>const</code> after the type: <code>int const* ptr</code> or use <code>const int* ptr</code> (be consistent).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="integer-types">
+      <h2>Integer Types</h2>
+      <ul>
+        <li>Use <code>int</code> for most integer values.</li>
+        <li>Use <code>int64_t</code>, <code>uint32_t</code>, etc. from <code>&lt;cstdint&gt;</code> when you need specific sizes.</li>
+        <li>Don't use short, long, long long — sizes are platform-dependent.</li>
+        <li>Use <code>size_t</code> for sizes and indices (matches STL containers).</li>
+        <li>Use unsigned types only when you need wrap-around behavior or bit operations.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="64bit-portability">
+      <h2>64-bit Portability</h2>
+      <ul>
+        <li>Code should be 64-bit and 32-bit friendly.</li>
+        <li>Use <code>sizeof()</code> for sizes, not hardcoded values.</li>
+        <li>Use proper format macros for printf: <code>PRId64</code>, <code>PRIu32</code>, etc.</li>
+        <li>Don't assume <code>int</code> and pointer sizes — use <code>intptr_t</code>/<code>uintptr_t</code> for pointer-sized integers.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="preprocessor-macros">
+      <h2>Preprocessor Macros</h2>
+      <ul>
+        <li>Avoid macros; prefer inline functions, enums, and const variables.</li>
+        <li>If you must use macros: name them with <code>ALL_CAPS_WITH_UNDERSCORES</code>.</li>
+        <li>Don't use macros to define pieces of a C++ API.</li>
+        <li>Macros can cause subtle bugs due to textual substitution.</li>
+        <li>Acceptable uses: include guards, conditional compilation, certain platform abstraction.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="zero-nullptr">
+      <h2>0 and nullptr/NULL</h2>
+      <ul>
+        <li>Use <code>0</code> for integers, <code>0.0</code> for reals, <code>nullptr</code> for pointers, <code>'\0'</code> for chars.</li>
+        <li>Prefer <code>nullptr</code> over <code>NULL</code> or <code>0</code> for pointers (C++11 feature).</li>
+        <li><code>nullptr</code> is type-safe and works better with templates.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="sizeof">
+      <h2>sizeof</h2>
+      <ul>
+        <li>Prefer <code>sizeof(varname)</code> to <code>sizeof(type)</code>.</li>
+        <li><code>sizeof(varname)</code> updates automatically if variable type changes.</li>
+        <li>Exception: when you actually need the size of a type.</li>
+      </ul>
+      <pre><code>MyStruct data;
+memset(&amp;data, 0, sizeof(data));  // Good
+memset(&amp;data, 0, sizeof(MyStruct));  // OK but not preferred</code></pre>
+    </div>
+
+    <div class="card" id="boost">
+      <h2>Boost</h2>
+      <ul>
+        <li>Use Boost libraries only when absolutely necessary.</li>
+        <li>Many Boost features are now in C++11/14/17 standard library.</li>
+        <li>Prefer standard library equivalents when available.</li>
+        <li>Boost can increase compile times and binary sizes significantly.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="modern-cpp">
+      <h2>Modern C++ (C++11/14/17/20)</h2>
+      <ul>
+        <li>Use modern C++ features where they improve code clarity and safety.</li>
+        <li>Prefer: <code>auto</code> (when type is obvious), <code>nullptr</code>, <code>enum class</code>, range-based for loops, lambdas, smart pointers.</li>
+        <li>Use <code>override</code> and <code>final</code> specifiers for virtual functions.</li>
+        <li>Use <code>= default</code> and <code>= delete</code> for special member functions.</li>
+        <li>Consider <code>constexpr</code> for compile-time constants and functions.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="general-naming">
+      <h2>General Naming Rules</h2>
+      <ul>
+        <li>Names should be descriptive; avoid abbreviation unless universally understood.</li>
+        <li>Give meaningful names even for short-lived locals.</li>
+        <li>Optimize for readability, not for minimal typing.</li>
+        <li>Abbreviations OK: <code>i</code> for loop counter, <code>T</code> for template parameter.</li>
+        <li>Avoid: <code>int fnh;</code> — unclear. Use: <code>int priceCountReader;</code></li>
+      </ul>
+    </div>
+
+    <div class="card" id="file-names">
+      <h2>File Names</h2>
+      <ul>
+        <li>Filenames should be all lowercase with underscores: <code>my_useful_class.cc</code></li>
+        <li>Or match class name: <code>MyUsefulClass.cpp</code> (project convention).</li>
+        <li>C++ files: <code>.cc</code>, <code>.cpp</code>. Headers: <code>.h</code>, <code>.hpp</code>.</li>
+        <li>Be consistent within your project.</li>
+        <li>Do not use filenames that already exist in <code>/usr/include</code>.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="type-names">
+      <h2>Type Names</h2>
+      <ul>
+        <li>Type names (classes, structs, type aliases, enums, type template parameters): <strong>PascalCase</strong>.</li>
+        <li>No underscores: <code>MyExcitingClass</code>, <code>MyExcitingEnum</code>.</li>
+        <li>Applies to: classes, structs, typedefs, using aliases, enums.</li>
+      </ul>
+      <pre><code>class UrlTable { ... };
+struct UrlTableProperties { ... };
+typedef hash_map&lt;UrlTableProperties*, string&gt; PropertiesMap;
+using PropertiesMap = hash_map&lt;UrlTableProperties*, string&gt;;</code></pre>
+    </div>
+
+    <div class="card" id="variable-names">
+      <h2>Variable Names</h2>
+      <ul>
+        <li><strong>Lux convention</strong>: Local variables use <code>camelCase</code>.</li>
+        <li>Member variables: prefix with <code>m_</code> then PascalCase: <code>m_TableName</code>.</li>
+        <li>Static members: prefix with <code>s_</code>: <code>s_InstanceCount</code>.</li>
+        <li>Common variable names: <code>tableName</code>, <code>myExcitingLocalVariable</code>.</li>
+        <li>Struct data members can be named like regular variables (no <code>m_</code> prefix).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="constant-names">
+      <h2>Constant Names</h2>
+      <ul>
+        <li>Use <code>k</code> prefix followed by PascalCase: <code>kDaysInAWeek</code>, <code>kMaxBufferSize</code>.</li>
+        <li>Applies to: const variables, constexpr, enumerators.</li>
+        <li>All compile-time constants should follow this convention.</li>
+      </ul>
+      <pre><code>const int kDaysInAWeek = 7;
+constexpr int kMaxValue = 100;</code></pre>
+    </div>
+
+    <div class="card" id="function-names">
+      <h2>Function Names</h2>
+      <ul>
+        <li><strong>Lux convention</strong>: Functions use <strong>PascalCase</strong>: <code>AddTableEntry()</code>, <code>DeleteUrl()</code>.</li>
+        <li>Accessors/mutators: <code>GetValue()</code>, <code>SetValue()</code>, or <code>value()</code> and <code>set_value()</code> (be consistent).</li>
+        <li>Same naming rule for regular functions, member functions, and static functions.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="namespace-names">
+      <h2>Namespace Names</h2>
+      <ul>
+        <li>Namespace names are all lower-case, with underscores between words: <code>lux_core</code>, <code>web_search</code>.</li>
+        <li>Top-level namespace based on project name.</li>
+        <li>Avoid nested namespaces that match well-known top-level names (<code>std</code>, etc.).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="enumerator-names">
+      <h2>Enumerator Names</h2>
+      <ul>
+        <li>Prefer constant-style naming: <code>kEnumName</code>.</li>
+        <li>Alternative: <code>ENUM_NAME</code> (macro style) — acceptable but less preferred.</li>
+        <li>For <code>enum class</code>, no prefix needed: <code>Color::Red</code> (scoped).</li>
+      </ul>
+      <pre><code>enum UrlTableErrors {
+  kOK = 0,
+  kErrorOutOfMemory,
+  kErrorMalformedInput,
+};
+
+enum class Color { Red, Green, Blue };</code></pre>
+    </div>
+
+    <div class="card" id="macro-names">
+      <h2>Macro Names</h2>
+      <ul>
+        <li>Macros: <code>ALL_CAPS_WITH_UNDERSCORES</code>.</li>
+        <li>Use macros sparingly — they don't respect namespaces or scope.</li>
+      </ul>
+      <pre><code>#define ROUND(x) ...
+#define PI_ROUNDED 3.0</code></pre>
+    </div>
+
+    <div class="card" id="naming-exceptions">
+      <h2>Exceptions to Naming Rules</h2>
+      <ul>
+        <li>If naming something similar to existing C/C++ entity, follow existing convention.</li>
+        <li>Example: <code>bigopen()</code> (function matching <code>open()</code>).</li>
+        <li>When matching existing patterns for consistency, deviation is acceptable.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="comment-style">
+      <h2>Comment Style</h2>
+      <ul>
+        <li>Use <code>//</code> or <code>/* */</code> syntax; be consistent.</li>
+        <li>Prefer <code>//</code> for most comments.</li>
+        <li>Use <code>/* */</code> for multi-line comments if preferred in your project.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="file-comments">
+      <h2>File Comments</h2>
+      <ul>
+        <li>Start each file with license boilerplate if applicable.</li>
+        <li>File comments describe the file's contents and purpose.</li>
+        <li>Include copyright notice, description of file contents.</li>
+        <li>Don't duplicate comments from .h in .cc — reference the header instead.</li>
+      </ul>
+      <pre><code>// Copyright 2023 Lux Engine Team
+// Licensed under MIT License
+//
+// camera.h: Defines the Camera class for 3D viewpoint control.</code></pre>
+    </div>
+
+    <div class="card" id="class-comments">
+      <h2>Class Comments</h2>
+      <ul>
+        <li>Every non-obvious class declaration should have a comment describing purpose and usage.</li>
+        <li>Document thread-safety, important invariants, whether class is copyable.</li>
+        <li>Comment immediately before class declaration.</li>
+      </ul>
+      <pre><code>// Iterates over contents of GargantuanTable.
+// Thread-compatible.
+class GargantuanTableIterator {
+  ...
+};</code></pre>
+    </div>
+
+    <div class="card" id="function-comments">
+      <h2>Function Comments</h2>
+      <ul>
+        <li>Declaration comments describe function interface: what it does, parameters, return value, side effects.</li>
+        <li>Document what the function does, not how (implementation details go in definition).</li>
+        <li>Comments at function declaration (in .h file); less detailed comments at definition if needed.</li>
+        <li>For obvious functions (simple getters), comments can be omitted.</li>
+        <li>Document ownership transfer, null parameter handling, and thread-safety.</li>
+      </ul>
+      <pre><code>// Returns an iterator for this table. It is the client's
+// responsibility to delete the iterator when done.
+// The iterator is initially positioned at the beginning.
+Iterator* GetIterator() const;</code></pre>
+    </div>
+
+    <div class="card" id="variable-comments">
+      <h2>Variable Comments</h2>
+      <ul>
+        <li>Generally the variable name should be descriptive enough.</li>
+        <li>Add comments for non-obvious variables, especially class member variables.</li>
+        <li>Document the purpose, units, lifetime, ownership.</li>
+      </ul>
+      <pre><code>private:
+  // Used to bounds-check table accesses. -1 means
+  // uninitialized.
+  int m_NumTotalEntries;</code></pre>
+    </div>
+
+    <div class="card" id="implementation-comments">
+      <h2>Implementation Comments</h2>
+      <ul>
+        <li>Provide comments at tricky, non-obvious, or important parts of your code.</li>
+        <li>Comment <em>why</em> you're doing something, not what the code does (code shows what).</li>
+        <li>Don't state the obvious; assume the reader knows C++ better than you.</li>
+        <li>Good for algorithm explanations, surprising edge cases, optimization rationale.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="todo-comments">
+      <h2>TODO Comments</h2>
+      <ul>
+        <li>Use <code>TODO</code> comments for code that is temporary, needs improvement, or where future work is planned.</li>
+        <li>Format: <code>// TODO(username): Description of what TODO</code></li>
+        <li>Include name/identifier so future maintainers can ask questions.</li>
+      </ul>
+      <pre><code>// TODO(johndoe): Optimize this algorithm for large datasets
+// TODO(bug#12345): Handle negative values correctly</code></pre>
+    </div>
+
+    <div class="card" id="deprecation-comments">
+      <h2>Deprecation Comments</h2>
+      <ul>
+        <li>Mark deprecated interfaces with <code>DEPRECATED</code> comments.</li>
+        <li>Include brief rationale and what to use instead.</li>
+        <li>Use both comment and <code>[[deprecated]]</code> attribute if available.</li>
+      </ul>
+      <pre><code>// DEPRECATED: Use NewFunction() instead.
+// This will be removed in version 2.0.
+[[deprecated("Use NewFunction")]]
+void OldFunction();</code></pre>
+    </div>
+
+    <div class="card" id="punctuation-grammar">
+      <h2>Punctuation, Spelling and Grammar</h2>
+      <ul>
+        <li>Pay attention to punctuation, spelling, and grammar.</li>
+        <li>Well-written comments are easier to read.</li>
+        <li>Complete sentences are more readable than sentence fragments.</li>
+        <li>Use proper capitalization.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="line-length">
+      <h2>Line Length</h2>
+      <ul>
+        <li>Each line of text should be at most <strong>80 characters</strong> long.</li>
+        <li>Exceptions: long paths, URLs, long string literals, include statements.</li>
+        <li>Don't break lines unnecessarily — readability sometimes requires longer lines.</li>
+        <li>Comments: wrap at 80 columns for readability.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="non-ascii">
+      <h2>Non-ASCII Characters</h2>
+      <ul>
+        <li>Non-ASCII characters should be rare.</li>
+        <li>When needed, use UTF-8 encoding.</li>
+        <li>Use <code>\u</code> escape sequences for non-printable characters and when clarity is needed.</li>
+        <li>Never use char16_t, char32_t unless interfacing with APIs that require them.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="spaces-tabs">
+      <h2>Spaces vs. Tabs</h2>
+      <ul>
+        <li>Use <strong>only spaces</strong>, never tabs.</li>
+        <li>Indent <strong>2 spaces</strong> at a time.</li>
+        <li>Configure your editor to insert spaces when you press Tab.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="function-declarations">
+      <h2>Function Declarations and Definitions</h2>
+      <ul>
+        <li>Return type on same line as function name; parameters on same line if they fit.</li>
+        <li>If doesn't fit, break after return type, indent parameters 4 spaces.</li>
+        <li>Or: all parameters on subsequent lines, each indented 4 spaces.</li>
+        <li>Open brace always at end of last line of declaration, not on its own line.</li>
+        <li>Close brace on its own line, or on same line as open brace for empty functions.</li>
+      </ul>
+      <pre><code>ReturnType ClassName::FunctionName(Type par1, Type par2) {
+  DoSomething();
+}
+
+// If doesn't fit on one line:
+ReturnType ClassName::ReallyLongFunctionName(
+    Type par1, Type par2, Type par3) {
+  DoSomething();
+}
+
+// Empty or inline:
+void SmallFunction() {}
+void AnotherSmall() { DoOneThing(); }</code></pre>
+    </div>
+
+    <div class="card" id="function-calls">
+      <h2>Function Calls</h2>
+      <ul>
+        <li>Write call on single line if it fits.</li>
+        <li>If doesn't fit: wrap arguments at paren, indent 4 spaces.</li>
+        <li>Or: each argument on separate line, aligned or indented 4 spaces.</li>
+        <li>Minimize the number of lines when reasonable.</li>
+      </ul>
+      <pre><code>result = DoSomething(argument1, argument2, argument3);
+
+// If doesn't fit:
+result = DoSomething(
+    argument1, argument2, argument3, argument4);
+
+// Or one per line:
+result = DoSomething(
+    argument1,
+    argument2,
+    argument3,
+    argument4);</code></pre>
+    </div>
+
+    <div class="card" id="conditionals">
+      <h2>Conditionals</h2>
+      <ul>
+        <li>Space between <code>if</code> and opening paren; no space between paren and condition.</li>
+        <li>Always use braces for body, even single statements (safety).</li>
+        <li>Open brace at end of condition line; close brace on its own line or followed by <code>else</code>.</li>
+        <li><code>else</code> goes on same line as closing brace of <code>if</code>.</li>
+      </ul>
+      <pre><code>if (condition) {
+  DoSomething();
+} else if (other_condition) {
+  DoSomethingElse();
+} else {
+  DoDefaultThing();
+}</code></pre>
+    </div>
+
+    <div class="card" id="loops-switch">
+      <h2>Loops and Switch Statements</h2>
+      <ul>
+        <li>Space after keyword; braces required even for single statements.</li>
+        <li>Empty loop bodies: use <code>{}</code> or <code>continue</code>, with comment.</li>
+        <li>Switch: braces around case blocks optional unless declaring variables.</li>
+        <li>Always have <code>default</code> case (even if just a comment explaining why nothing happens).</li>
+      </ul>
+      <pre><code>for (int i = 0; i &lt; kSomeNumber; ++i) {
+  DoSomething(i);
+}
+
+switch (var) {
+  case 0:
+    DoCase0();
+    break;
+  case 1: {
+    int localVar = GetValue();
+    DoCase1(localVar);
+    break;
+  }
+  default:
+    DoDefault();
+}</code></pre>
+    </div>
+
+    <div class="card" id="pointer-expressions">
+      <h2>Pointer and Reference Expressions</h2>
+      <ul>
+        <li>No spaces around <code>.</code> or <code>-&gt;</code>.</li>
+        <li>Pointer/reference operators: no space after <code>*</code> or <code>&amp;</code>.</li>
+        <li>Placement: attach to type or variable (be consistent in file).</li>
+      </ul>
+      <pre><code>x = *p;
+p = &amp;x;
+x = r.y;
+x = r-&gt;y;
+
+// When declaring pointers/references:
+char* c;       // OK
+const string&amp; str;   // OK</code></pre>
+    </div>
+
+    <div class="card" id="boolean-expressions">
+      <h2>Boolean Expressions</h2>
+      <ul>
+        <li>Break long boolean expressions before logical operators.</li>
+        <li>Indent continued lines to align or use 4-space indent.</li>
+        <li>Consider extracting complex expressions to descriptive boolean variables.</li>
+      </ul>
+      <pre><code>if (thisOneThing &gt; thisOtherThing &amp;&amp;
+    aThirdThing == aFourthThing &amp;&amp;
+    yetAnother &amp;&amp; lastOne) {
+  DoSomething();
+}</code></pre>
+    </div>
+
+    <div class="card" id="return-values">
+      <h2>Return Values</h2>
+      <ul>
+        <li>Don't needlessly surround return expression with parentheses.</li>
+        <li>Use parentheses only where needed for clarity or with operators.</li>
+      </ul>
+      <pre><code>return result;                  // Good
+return (some_long_condition &amp;&amp; // OK - clarity
+        another_condition);
+return (value);                 // Bad - unnecessary parens</code></pre>
+    </div>
+
+    <div class="card" id="variable-initialization">
+      <h2>Variable and Array Initialization</h2>
+      <ul>
+        <li>Use <code>=</code>, <code>()</code>, or <code>{}</code> for initialization; be consistent.</li>
+        <li>Prefer <code>{}</code> for C++11 uniform initialization (avoids narrowing).</li>
+      </ul>
+      <pre><code>int x = 3;
+int x(3);
+int x{3};
+string name = "Some name";
+vector&lt;int&gt; v{1, 2, 3};  // Uniform initialization</code></pre>
+    </div>
+
+    <div class="card" id="preprocessor-directives">
+      <h2>Preprocessor Directives</h2>
+      <ul>
+        <li>Preprocessor directives start at beginning of line (no indentation).</li>
+        <li>Even if inside indented code, <code>#if</code>, <code>#define</code>, etc. are at column 0.</li>
+      </ul>
+      <pre><code>if (condition) {
+#if SOMETHING
+  DoThing();
+#endif
+  DoAnotherThing();
+}</code></pre>
+    </div>
+
+    <div class="card" id="class-format">
+      <h2>Class Format</h2>
+      <ul>
+        <li>Access specifiers (<code>public:</code>, <code>protected:</code>, <code>private:</code>) indented 1 space.</li>
+        <li>Or: not indented (flush with class keyword) — be consistent.</li>
+        <li>Content of each section indented normally (2 spaces from class).</li>
+      </ul>
+      <pre><code>class MyClass {
+ public:  // 1 space indent
+  MyClass();
+  ~MyClass();
+
+ private:
+  int m_SomeVar;
+};</code></pre>
+    </div>
+
+    <div class="card" id="constructor-initializers">
+      <h2>Constructor Initializer Lists</h2>
+      <ul>
+        <li>Can be all on one line or with subsequent lines indented 4 spaces.</li>
+        <li>Colon and first initializer on same line or colon on first initializer line.</li>
+      </ul>
+      <pre><code>// All on one line:
+MyClass::MyClass(int var) : m_SomeVar(var), m_OtherVar(var + 1) {}
+
+// Multiple lines:
+MyClass::MyClass(int var)
+    : m_SomeVar(var),
+      m_OtherVar(var + 1) {
+  DoSomething();
+}</code></pre>
+    </div>
+
+    <div class="card" id="namespace-formatting">
+      <h2>Namespace Formatting</h2>
+      <ul>
+        <li>Namespace contents are <strong>not indented</strong>.</li>
+        <li>Namespaces don't add a level of indentation.</li>
+        <li>Declare nested namespaces with each on its own line.</li>
+        <li>Close namespace with comment: <code>// namespace name</code></li>
+      </ul>
+      <pre><code>namespace lux {
+
+void Foo() {  // No extra indentation
+  DoSomething();
+}
+
+}  // namespace lux</code></pre>
+    </div>
+
+    <div class="card" id="horizontal-whitespace">
+      <h2>Horizontal Whitespace</h2>
+      <ul>
+        <li><strong>Never</strong> put trailing whitespace at end of line.</li>
+        <li>Open braces should always have a space before them: <code>void f(bool b) {</code></li>
+        <li>Semicolons usually have no space before them: <code>int i = 0;</code></li>
+        <li>Space after keywords in conditions/loops: <code>if (</code>, <code>for (</code>, <code>while (</code></li>
+        <li>No space inside parentheses: <code>if (x)</code> not <code>if ( x )</code></li>
+        <li>Spaces around binary operators: <code>x = y + z;</code></li>
+        <li>No spaces for unary operators: <code>++x</code>, <code>!y</code></li>
+      </ul>
+    </div>
+
+    <div class="card" id="vertical-whitespace">
+      <h2>Vertical Whitespace</h2>
+      <ul>
+        <li>Minimize use of vertical whitespace.</li>
+        <li>Blank lines at beginning or end of function rarely help readability.</li>
+        <li>Don't use more than one or two blank lines between functions.</li>
+        <li>Blank lines inside functions: use sparingly, to separate logical chunks.</li>
+        <li>More code visible on screen = easier to follow control flow.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="variables-members">
+      <h2>Variables — Members and Locals</h2>
+      <ul>
+        <li>Private class members: prefix with <code>m_</code> and use PascalCase after prefix (e.g. <code>m_PositionX</code>).</li>
+        <li>Static members: prefix with <code>s_</code> (e.g. <code>s_InstanceCount</code>).</li>
+        <li>Local variables: <strong>camelCase</strong> with descriptive names (e.g. <code>deltaTime</code>).</li>
+        <li>Constants: prefix <code>k</code>, PascalCase after (e.g. <code>kMaxLights</code>).</li>
+        <li>Global variables should be rare; if used, consider a <code>g_</code> prefix.</li>
+      </ul>
+      <pre><code>class Camera {
+public:
+  void SetPosition(float x, float y, float z);
+private:
+  float m_PositionX;
+  float m_PositionY;
+  float m_PositionZ;
+  static int s_CameraCount;
+};</code></pre>
+    </div>
+
+    <div class="card" id="function-parameters">
+      <h2>Functions — parameters & ordering</h2>
+      <ul>
+        <li>Parameter order: inputs (values or <code>const T&</code>), then outputs (non-const pointers).</li>
+        <li>Avoid default arguments except in limited cases.</li>
+        <li>Do not use non-const reference parameters for inputs; use <code>const T&</code> or pointers as appropriate.</li>
+        <li>Keep functions short and focused (aim ~40 lines or less).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="threading-globals">
+      <h2>Threading & globals</h2>
+      <ul>
+        <li>Avoid global mutable state. If needed, prefix with <code>g_</code> and document usage.</li>
+        <li>Use <code>std::mutex</code> and <code>std::lock_guard</code> for synchronization; centralize thread pools where possible.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="templates-casts">
+      <h2>Templates, casts & advanced features</h2>
+      <ul>
+        <li>Use templates only when necessary; keep public template interfaces readable.</li>
+        <li>Use C++ casts (<code>static_cast</code>, <code>const_cast</code>, <code>reinterpret_cast</code>) instead of C-style casts.</li>
+        <li>Do not use <code>dynamic_cast</code> in production code (tests only).</li>
+      </ul>
+    </div>
+
+    <div class="card" id="enums-macros">
+      <h2>Enums, macros and constants</h2>
+      <ul>
+        <li>Prefer <code>enum class</code> for scoped enums.</li>
+        <li>Constants: <code>kNameLikeThis</code>.</li>
+        <li>Macros should be avoided; if required, use ALL_CAPS and document them clearly.</li>
+      </ul>
+      <pre><code>enum class RenderAPI { OpenGL, Vulkan, Metal };
+static constexpr int kMaxLights = 32;
+#define LUX_EXPORT ...  // minimize macro usage</code></pre>
+    </div>
+
+    <div class="card" id="exceptions-rules">
+      <h2>Exceptions to the Rules</h2>
+      <ul>
+        <li>The coding conventions described are mandatory, but all good rules have exceptions.</li>
+        <li><strong>Existing Non-conformant Code</strong>: When modifying code that doesn't conform to this guide, you may diverge from rules to stay consistent with local conventions.</li>
+        <li><strong>Local Consistency</strong>: If code around you uses a certain style, match it even if it differs from this guide.</li>
+        <li>Consistency includes both global and local consistency.</li>
+        <li>When in doubt, ask the original author or maintainer of the code.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="windows-code">
+      <h2>Windows Code Considerations</h2>
+      <ul>
+        <li>Use Google/Lux naming conventions, not Hungarian notation.</li>
+        <li>Use C++ source extensions (<code>.cc</code>, <code>.cpp</code>) not <code>.c</code>.</li>
+        <li>OK to use Windows types (DWORD, HANDLE) when calling Windows APIs, but stay close to C++ types.</li>
+        <li>Use <code>const TCHAR*</code> instead of <code>LPCTSTR</code>.</li>
+        <li>Set compiler to warning level 3+ and treat warnings as errors.</li>
+        <li>Don't use <code>#pragma once</code>; use standard include guards.</li>
+        <li>Avoid nonstandard extensions (<code>#pragma</code>, <code>__declspec</code>) except when required.</li>
+        <li>Exception: Multiple inheritance allowed for COM/ATL interfaces.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="example-header">
+      <h2>Comprehensive Example — Header</h2>
+      <pre><code>// camera.h
+// Copyright 2024 Lux Engine Team
+// Camera class for 3D viewpoint management
+
+#ifndef LUX_CORE_CAMERA_H_
+#define LUX_CORE_CAMERA_H_
+
+#include &lt;memory&gt;
+
+namespace lux {
+
+// Manages a 3D camera with position and orientation.
+// Not thread-safe — must be accessed from single thread.
+class Camera {
+public:
+  Camera();
+  explicit Camera(float x, float y, float z);
+  ~Camera();
+
+  // Disallow copying
+  Camera(const Camera&amp;) = delete;
+  Camera&amp; operator=(const Camera&amp;) = delete;
+
+  void SetPosition(float x, float y, float z);
+  void GetPosition(float* x, float* y, float* z) const;
+  void Rotate(float pitch, float yaw, float roll);
+  const float* GetViewMatrix() const;
+
+private:
+  void UpdateViewMatrix();
+
+  float m_PositionX;
+  float m_PositionY;
+  float m_PositionZ;
+  float m_Pitch;
+  float m_Yaw;
+  float m_Roll;
+  float m_ViewMatrix[16];
+  bool m_MatrixNeedsUpdate;
+
+  static int s_CameraCount;
+  static constexpr float kMaxPitch = 1.57f;
+};
+
+}  // namespace lux
+
+#endif  // LUX_CORE_CAMERA_H_</code></pre>
+    </div>
+
+    <div class="card" id="example-implementation">
+      <h2>Comprehensive Example — Implementation</h2>
+      <pre><code>// camera.cc
+#include "lux/core/camera.h"
+
+#include &lt;cmath&gt;
+#include &lt;cstring&gt;
+
+namespace lux {
+
+int Camera::s_CameraCount = 0;
+
+Camera::Camera()
+    : m_PositionX(0.0f),
+      m_PositionY(0.0f),
+      m_PositionZ(0.0f),
+      m_Pitch(0.0f),
+      m_Yaw(0.0f),
+      m_Roll(0.0f),
+      m_MatrixNeedsUpdate(true) {
+  ++s_CameraCount;
+  memset(m_ViewMatrix, 0, sizeof(m_ViewMatrix));
+}
+
+Camera::Camera(float x, float y, float z)
+    : Camera() {
+  SetPosition(x, y, z);
+}
+
+Camera::~Camera() {
+  --s_CameraCount;
+}
+
+void Camera::SetPosition(float x, float y, float z) {
+  m_PositionX = x;
+  m_PositionY = y;
+  m_PositionZ = z;
+  m_MatrixNeedsUpdate = true;
+}
+
+void Camera::GetPosition(float* x, float* y, float* z) const {
+  if (x) *x = m_PositionX;
+  if (y) *y = m_PositionY;
+  if (z) *z = m_PositionZ;
+}
+
+void Camera::Rotate(float pitch, float yaw, float roll) {
+  m_Pitch += pitch;
+  m_Yaw += yaw;
+  m_Roll += roll;
+  
+  // Clamp pitch
+  if (m_Pitch &gt; kMaxPitch) {
+    m_Pitch = kMaxPitch;
+  } else if (m_Pitch &lt; -kMaxPitch) {
+    m_Pitch = -kMaxPitch;
+  }
+  
+  m_MatrixNeedsUpdate = true;
+}
+
+const float* Camera::GetViewMatrix() const {
+  if (m_MatrixNeedsUpdate) {
+    const_cast&lt;Camera*&gt;(this)-&gt;UpdateViewMatrix();
+  }
+  return m_ViewMatrix;
+}
+
+void Camera::UpdateViewMatrix() {
+  // Identity matrix
+  memset(m_ViewMatrix, 0, sizeof(m_ViewMatrix));
+  m_ViewMatrix[0] = m_ViewMatrix[5] = 
+      m_ViewMatrix[10] = m_ViewMatrix[15] = 1.0f;
+  m_MatrixNeedsUpdate = false;
+}
+
+}  // namespace lux</code></pre>
+    </div>
+
+    <div class="card" id="parting-words">
+      <h2>Parting Words</h2>
+      <p><strong>Use common sense and BE CONSISTENT.</strong></p>
+      <p>If you are editing code, take a few minutes to look at the code around you and determine its style. If they use spaces around their <code>if</code> clauses, you should too. If their comments have little boxes of stars around them, make your comments have little boxes of stars around them too.</p>
+      <p>The point of having style guidelines is to have a common vocabulary of coding so people can concentrate on <em>what</em> you are saying, rather than on <em>how</em> you are saying it. We present global style rules here so people know the vocabulary. But local style is also important. If code you add to a file looks drastically different from the existing code around it, the discontinuity throws readers out of their rhythm when they go to read it. Try to avoid this.</p>
+    </div>
+
+  </section>
+
+  <section class="card">
+    <h2>Notes & Sources</h2>
+    <p class="small">This document comprehensively integrates the Lux Engine coding conventions with detailed rules and recommendations from the <strong>Google C++ Style Guide</strong>. All major topics from the Google guide have been incorporated including:</p>
+    <ul class="small">
+      <li>Header Files (guards, dependencies, inline functions, include ordering)</li>
+      <li>Scoping (namespaces, nested classes, local/static/global variables)</li>
+      <li>Classes (constructors, inheritance, interfaces, operator overloading, declaration order)</li>
+      <li>C++ Features (references, overloading, casts, RTTI, exceptions, const, integer types, preprocessor)</li>
+      <li>Naming (files, types, variables, constants, functions, namespaces, enums, macros)</li>
+      <li>Comments (file, class, function, variable, implementation, TODO, deprecation)</li>
+      <li>Formatting (line length, spacing, function declarations, conditionals, loops, whitespace)</li>
+      <li>Exceptions to Rules (existing code, Windows considerations)</li>
+    </ul>
+    <p class="small">Reference: Google C++ Style Guide PDF. This enriched document provides a complete reference for C++ development in the Lux Engine project.</p>
+  </section>
+
+</main>
+</div>
+
+<footer>
+  <p>Lux Engine • Comprehensive C++ Coding Conventions • Version 2.0 (English)</p>
+  <p class="small">Integrated with Google C++ Style Guide • Updated December 2025</p>
+</footer>
+
+<script>
+// Smooth scroll for navigation links
+document.querySelectorAll('.sidebar a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // Update active link
+      document.querySelectorAll('.sidebar a').forEach(link => link.classList.remove('active'));
+      this.classList.add('active');
+    }
+  });
+});
+
+// Highlight current section while scrolling
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.getAttribute('id');
+      if (id) {
+        document.querySelectorAll('.sidebar a').forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    }
+  });
+}, { threshold: 0.5, rootMargin: '-100px 0px -80% 0px' });
+
+// Observe all cards with IDs
+document.querySelectorAll('.card[id]').forEach(card => observer.observe(card));
+</script>
+</body>
+</html>

@@ -29,11 +29,19 @@ namespace lux
 
     void Mesh::SetupMesh() noexcept
     {
-        Layout layout;
-        layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
-        layout.Push<Vector2f>(GPUPrimitiveDataType::FLOAT, false);
-        layout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
-        layout.Finalize();
+        m_vbo.SetData(m_meshData.vertices, BufferUsage::StaticDraw, m_layout);
+        m_ebo.SetData(m_meshData.indices, BufferUsage::StaticDraw, m_layout);
+
+        m_layout->SetupLayout({{m_meshData.layout, m_vbo}});
+    }
+
+    void Mesh::SetupMeshInstanced(const std::vector<Transform>& instanceMatrices) noexcept
+    {
+        Layout vertexLayout;
+        vertexLayout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        vertexLayout.Push<Vector2f>(GPUPrimitiveDataType::FLOAT, false);
+        vertexLayout.Push<Vector3f>(GPUPrimitiveDataType::FLOAT, false);
+        vertexLayout.Finalize();
 
         Layout instanceLayout;
         instanceLayout.index = 3;
@@ -43,13 +51,19 @@ namespace lux
         instanceLayout.Push<Vector4f>(GPUPrimitiveDataType::FLOAT, true);
         instanceLayout.Finalize();
 
-        auto matrixData = MatricesAsFloatVector(m_instanceMatrices);
+        std::vector<Matrix4f> matrices;
+        matrices.reserve(instanceMatrices.size());
+
+        for (const auto& t : instanceMatrices)
+            matrices.push_back(t.ToMatrix4());
+
+        auto matrixData = MatricesAsFloatVector(matrices);
 
         m_vbo.SetData(m_meshData.vertices, BufferUsage::StaticDraw, m_layout);
-        m_ebo.SetData(m_meshData.indices, BufferUsage::StaticDraw, m_layout);
-        m_instanceVBO.SetData(matrixData, BufferUsage::StaticDraw, m_layout);
+        m_ebo.SetData(m_meshData.indices,  BufferUsage::StaticDraw, m_layout);
+        m_instanceVBO.SetData(matrixData,  BufferUsage::StaticDraw, m_layout);
 
-        m_layout->SetupLayout({{layout, m_vbo}, {instanceLayout, m_instanceVBO}});
+        m_layout->SetupLayout({ { vertexLayout,  m_vbo },{ instanceLayout, m_instanceVBO }});
     }
 
 

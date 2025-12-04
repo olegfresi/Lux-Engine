@@ -12,15 +12,6 @@ namespace lux
             case GraphicsAPI::OPENGL:
                 return CreateScope<OpenGLShader>(vertexPath, fragmentPath);
 
-            case GraphicsAPI::VULKAN:
-                break;
-
-            case GraphicsAPI::DIRECTX:
-                break;
-
-            case GraphicsAPI::METAL:
-                break;
-
             default:
                 assert(false);
         }

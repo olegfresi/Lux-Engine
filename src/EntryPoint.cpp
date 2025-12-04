@@ -1,5 +1,4 @@
 #include "../include/Application/Application.hpp"
-
 using namespace lux;
 #ifdef ENABLE_TESTING
 #include <gtest/gtest.h>
