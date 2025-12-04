@@ -22,16 +22,15 @@
 ## Rendering API Supported 🔑
   - OpenGL 4.1 Core Profile
 
-
 ## Requirements 📌
 - CMake 3.27 or higher
 - C++20 compiler
 - Python 3.10
 - Git
 
-# Automatic Build Instructions  🛠️
+# Automatic Build Instructions 🛠️
 The only thing you need to have installed is git, everything else will be configured automatically
-Open your terminal on Linux or MacOS or powershell on Windows then copy and paste the following commands on MacOS or Linux
+Open your terminal on Linux or MacOS then copy and paste the following commands
 ```bash 
 cd Desktop &&
 git clone https://github.com/olegfresi/Lux-Engine.git "Lux Engine" --recursive &&
@@ -65,7 +64,7 @@ cmake -S . -B build `
 cmake --build build --config Release
 ```
 
-## Useful CMake Options
+## Useful CMake Options 
 - `-DENABLE_TESTING=ON|OFF` toggles the GoogleTest targets (default: ON in Debug). <br><br>
 - `-DRUN_TESTS=ON|OFF` runs automated tests before launching the app (default: ON in Debug). <br><br>
 - `-DCMAKE_BUILD_TYPE=Debug|Release|RelWithDebInfo` selects the build profile for single-config generators. <br><br>
@@ -77,7 +76,7 @@ cmake --build build
 ctest --test-dir build
 ```
 
-## Setup Scripts  ⚙️
+## Setup Scripts ⚙️
 - `scripts/setup.sh` – automatic MacOS/Linux setup <br><br>
 - `scripts/windowsSetup.bat` – automatic windows setup <br><br>
 - `scripts/setup.py` – Python setup script <br><br>
@@ -85,13 +84,12 @@ ctest --test-dir build
 ## Assets  🧰
 3D assets,shaders, materials and textures are stored in `assets/` and can be replaced with your own.
 
-## Known Issues  ⚠️
+## Known Issues   ⚠️
 - Feel free to write there! 
 
 ## Contributing 💪
 You MUST read Coding Conventions established for this C++ project
 <a href="/Coding Conventions.html" target="_blank"> Coding Conventions </a>
-
 Be consistent along your work
 
 
